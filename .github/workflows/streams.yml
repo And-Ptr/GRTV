@@ -1,20 +1,25 @@
+name: grabbing streams
+
+on:
+  schedule:
+    - cron: '0 */1 * * *'
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Εξασφαλίζει ότι το workflow θα χρησιμοποιεί το Node 24 
-    # και δεν θα σταματήσει να λειτουργεί μετά τις 2 Ιουνίου 2026
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
-      # ΑΝΑΒΑΘΜΙΣΗ: Από v2 σε v4 για συμβατότητα με Node 20/24
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: config
         run: |
-          git config --global user.email "<>"
-          git config --global user.name "Update"
+          git config --global user.email "actions@github.com"
+          git config --global user.name "Update Bot"
 
       - name: grab m3u files
         run: |
@@ -58,5 +63,5 @@ jobs:
           
       - name: commit & push
         run: |
-          git commit -m "streams updated"
+          git commit -m "streams updated" || echo "No changes to commit"
           git push
