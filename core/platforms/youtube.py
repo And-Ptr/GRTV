@@ -1,28 +1,32 @@
 import sys
 import subprocess
 
-def get_m3u8(channel_url):
+def get_m3u8(url_or_id):
     try:
-        # Χρησιμοποιούμε το yt-dlp για να πάρουμε το URL του stream
+        # Αν δεν είναι πλήρες URL, το φτιάχνουμε
+        if not url_or_id.startswith('http'):
+            if 'watch?v=' in url_or_id:
+                url = f"https://www.youtube.com/{url_or_id}"
+            elif url_or_id.startswith('@'):
+                url = f"https://www.youtube.com/{url_or_id}/live"
+            else:
+                url = f"https://youtube.com{url_or_id}"
+        else:
+            url = url_or_id
+
         command = [
             'yt-dlp',
             '--quiet',
             '--no-warnings',
             '-f', 'best',
             '-g',
-            channel_url
+            url
         ]
         result = subprocess.run(command, capture_output=True, text=True)
-        url = result.stdout.strip()
-        if url:
-            print(url)
-    except Exception as e:
+        print(result.stdout.strip())
+    except Exception:
         pass
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        # Δέχεται το URL του καναλιού ή του live video
-        channel = sys.argv[1]
-        if not channel.startswith('http'):
-            channel = f"https://www.youtube.com/{channel}/live"
-        get_m3u8(channel)
+        get_m3u8(sys.argv[1])
