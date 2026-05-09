@@ -3,21 +3,17 @@ import subprocess
 
 def get_m3u8(video_id):
     try:
-        # Καθαρίζουμε το video_id
-        video_id = video_id.strip()
-        
-        # Φτιάχνουμε το σωστό URL
-        if "youtube.com" in video_id or "youtu.be" in video_id:
-            url = video_id
-        else:
-            url = f"https://youtube.com{video_id}"
+        # Διόρθωση: Καθαρίζουμε το ID
+        video_id = str(video_id).strip()
+        url = f"https://www.youtube.com/watch?v={video_id}"
 
-        # Χρήση yt-dlp με ειδικές παραμέτρους για YouTube live
+        # Παράμετροι για να μοιάζει με κανονικό browser
         command = [
             'yt-dlp',
             '--quiet',
             '--no-warnings',
             '--no-check-certificate',
+            '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             '-f', 'best',
             '-g',
             url
@@ -26,14 +22,12 @@ def get_m3u8(video_id):
         result = subprocess.run(command, capture_output=True, text=True)
         link = result.stdout.strip()
         
-        # Εκτύπωση του link (αυτό θα γραφτεί στο m3u8 μέσω του YAML)
-        if link:
+        if link and link.startswith('http'):
             print(link)
-            
     except Exception:
         pass
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        # sys.argv[1] παίρνει το ID που δώσαμε στο workflow
+        # Χρησιμοποιούμε το sys.argv[1] για να πάρουμε το ID σωστά
         get_m3u8(sys.argv[1])
