@@ -8,8 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -20,7 +20,6 @@ jobs:
           sudo curl -L https://github.com -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
 
-
       - name: config
         run: |
           git config --global user.email "actions@github.com"
@@ -28,49 +27,47 @@ jobs:
 
       - name: grab m3u files
         run: |
-            pwd
             cd ./core/platforms/
             # Twitch Streams
-            python3 twitch.py altertvcy > ../../streams/ALTER_CY.m3u8     
-            python3 twitch.py aktinaradio > ../../streams/AKTINA_RADIO.m3u8
-            python3 twitch.py alithiavideo > ../../streams/ALITHIA_TV.m3u8
-            python3 twitch.py radiotvanemosgr > ../../streams/ANEMOS_RADIO.m3u8
-            python3 twitch.py astratv2021 > ../../streams/ASTRA_TV.m3u8
-            python3 twitch.py astratv2019 > ../../streams/ASTRA_TV_2.m3u8
-            python3 twitch.py chanialivetv > ../../streams/CHANIA_TV.m3u8
-            python3 twitch.py diavata_tv > ../../streams/DIABATA_TV.m3u8
-            python3 twitch.py dtpylias > ../../streams/DTP.m3u8
-            python3 twitch.py failarmy > ../../streams/FAILARMY.m3u8
-            python3 twitch.py farostv1959 > ../../streams/FAROS_TV_EKKLISIA.m3u8
-            python3 twitch.py fatsabooktv > ../../streams/FATSABOOK_TV.m3u8
-            python3 twitch.py younowflashtv > ../../streams/FLASH_TV.m3u8
-            python3 twitch.py freeangelwebtv > ../../streams/FREE_ANGEL.m3u8
-            python3 twitch.py hotbeatstv > ../../streams/HOTBEAST_TV.m3u8
-            python3 twitch.py iviewtvgr  > ../../streams/IVIEW_TV.m3u8
-            python3 twitch.py konitsaplustv > ../../streams/KONITSA_TV.m3u8
-            python3 twitch.py radiomakedonia > ../../streams/MAKEDONIA_RADIO.m3u8
-            python3 twitch.py oloutheradio > ../../streams/OLOUTHE_RADIO.m3u8
-            python3 twitch.py orthodoxiaradio > ../../streams/ORTHODOXIA_TV.m3u8
-            python3 twitch.py pakoestream > ../../streams/PAKOE_TV.m3u8
-            python3 twitch.py zefstv1 > ../../streams/PLUTON_TV.m3u8
-            python3 twitch.py midnightsumo > ../../streams/SUMO.m3u8
-            python3 twitch.py xtvision > ../../streams/XTVISION.m3u8
-            python3 twitch.py xtvision2 > ../../streams/XTVISION_2.m3u8
+            python3 twitch.py altertvcy > ../../streams/ALTER_CY.m3u8 || true
+            python3 twitch.py aktinaradio > ../../streams/AKTINA_RADIO.m3u8 || true
+            python3 twitch.py alithiavideo > ../../streams/ALITHIA_TV.m3u8 || true
+            python3 twitch.py radiotvanemosgr > ../../streams/ANEMOS_RADIO.m3u8 || true
+            python3 twitch.py astratv2021 > ../../streams/ASTRA_TV.m3u8 || true
+            python3 twitch.py astratv2019 > ../../streams/ASTRA_TV_2.m3u8 || true
+            python3 twitch.py chanialivetv > ../../streams/CHANIA_TV.m3u8 || true
+            python3 twitch.py diavata_tv > ../../streams/DIABATA_TV.m3u8 || true
+            python3 twitch.py dtpylias > ../../streams/DTP.m3u8 || true
+            python3 twitch.py failarmy > ../../streams/FAILARMY.m3u8 || true
+            python3 twitch.py farostv1959 > ../../streams/FAROS_TV_EKKLISIA.m3u8 || true
+            python3 twitch.py fatsabooktv > ../../streams/FATSABOOK_TV.m3u8 || true
+            python3 twitch.py younowflashtv > ../../streams/FLASH_TV.m3u8 || true
+            python3 twitch.py freeangelwebtv > ../../streams/FREE_ANGEL.m3u8 || true
+            python3 twitch.py hotbeatstv > ../../streams/HOTBEAST_TV.m3u8 || true
+            python3 twitch.py iviewtvgr  > ../../streams/IVIEW_TV.m3u8 || true
+            python3 twitch.py konitsaplustv > ../../streams/KONITSA_TV.m3u8 || true
+            python3 twitch.py radiomakedonia > ../../streams/MAKEDONIA_RADIO.m3u8 || true
+            python3 twitch.py oloutheradio > ../../streams/OLOUTHE_RADIO.m3u8 || true
+            python3 twitch.py orthodoxiaradio > ../../streams/ORTHODOXIA_TV.m3u8 || true
+            python3 twitch.py pakoestream > ../../streams/PAKOE_TV.m3u8 || true
+            python3 twitch.py zefstv1 > ../../streams/PLUTON_TV.m3u8 || true
+            python3 twitch.py midnightsumo > ../../streams/SUMO.m3u8 || true
+            python3 twitch.py xtvision > ../../streams/XTVISION.m3u8 || true
+            python3 twitch.py xtvision2 > ../../streams/XTVISION_2.m3u8 || true
             
             # Dailymotion Streams
-            python3 dailymotion.py x2j7kha > ../../streams/Euronews_Greece.m3u8
-            python3 dailymotion.py x8p5u0u > ../../streams/CGTN_Europe.m3u8
-            python3 dailymotion.py x3b68jn > ../../streams/CNEWS.m3u8
-            python3 dailymotion.py k5Hfx6eeaTjBE5zRXcn > ../../streams/STAR_KENTRIKHS_ELLADAS.m3u8
-            python3 dailymotion.py 1ilp5b3jja3168a4092 > ../../streams/STAR_KENTRIKHS_ELLADAS_2.m3u8
+            python3 dailymotion.py x2j7kha > ../../streams/Euronews_Greece.m3u8 || true
+            python3 dailymotion.py x8p5u0u > ../../streams/CGTN_Europe.m3u8 || true
+            python3 dailymotion.py x3b68jn > ../../streams/CNEWS.m3u8 || true
+            python3 dailymotion.py k5Hfx6eeaTjBE5zRXcn > ../../streams/STAR_KENTRIKHS_ELLADAS.m3u8 || true
+            python3 dailymotion.py 1ilp5b3jja3168a4092 > ../../streams/STAR_KENTRIKHS_ELLADAS_2.m3u8 || true
             
             # YouTube Streams
-            python3 youtube.py uWIhV9gQClg > ../../streams/Euronews_GR_Live.m3u8
+            python3 youtube.py uWIhV9gQClg > ../../streams/Euronews_GR_Live.m3u8 || true
             
       - name: git add
         run: |
           git add -A
-          ls -la 
           
       - name: commit & push
         run: |
