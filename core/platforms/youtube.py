@@ -1,33 +1,30 @@
-import sys
 import subprocess
+import json
+import sys
 
-def get_m3u8(video_id):
+def get_youtube_streams(video_id: str):
+    url = f"https://youtube.com{video_id}"
+    
     try:
-        # Διόρθωση: Καθαρίζουμε το ID
-        video_id = str(video_id).strip()
-        url = f"https://www.youtube.com/watch?v={video_id}"
-
-        # Παράμετροι για να μοιάζει με κανονικό browser
-        command = [
-            'yt-dlp',
-            '--quiet',
-            '--no-warnings',
-            '--no-check-certificate',
-            '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            '-f', 'best',
-            '-g',
-            url
-        ]
+        # Χρησιμοποιούμε το yt-dlp για να πάρουμε τα metadata σε JSON
+        result = subprocess.run(
+            ["yt-dlp", "-j", url],
+            capture_output=True,
+            text=True,
+            check=True
+        )
         
-        result = subprocess.run(command, capture_output=True, text=True)
-        link = result.stdout.strip()
+        video_data = json.loads(result.stdout)
         
-        if link and link.startswith('http'):
-            print(link)
-    except Exception:
-        pass
+        # Εκτύπωση των διαθέσιμων formats (URL και ποιότητα)
+        for f in video_data.get('formats', []):
+            print(f"Quality: {f.get('format_note')} - URL: {f.get('url')}\n")
+            
+    except Exception as e:
+        print(f"Σφάλμα: {e}")
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        # Χρησιμοποιούμε το sys.argv[1] για να πάρουμε το ID σωστά
-        get_m3u8(sys.argv[1])
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Χρήση: python script.py <video_id>")
+    else:
+        get_youtube_streams(sys.argv[1])
