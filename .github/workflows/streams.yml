@@ -64,7 +64,7 @@ jobs:
             python3 dailymotion.py 1ilp5b3jja3168a4092 > ../../streams/STAR_KENTRIKHS_ELLADAS_2.m3u8 || true
             
             # YouTube Streams
-            python3 python3 youtube.py uWIhV9gQClg > ../../streams/EURONEWS_GR.m3u8 || true
+            python3 youtube.py uWIhV9gQClg > ../../streams/EURONEWS_GR.m3u8 || true
             
       - name: git add
         run: |
