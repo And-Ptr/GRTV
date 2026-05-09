@@ -1,30 +1,33 @@
-import subprocess
-import json
 import sys
+import subprocess
 
-def get_youtube_streams(video_id: str):
-    url = f"https://youtube.com{video_id}"
-    
+def get_youtube_stream(video_id):
     try:
-        # Χρησιμοποιούμε το yt-dlp για να πάρουμε τα metadata σε JSON
-        result = subprocess.run(
-            ["yt-dlp", "-j", url],
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        # Χρησιμοποιούμε το yt-dlp για να πάρουμε το URL του live stream
+        # Το format "best" ή "95" συνήθως δίνει το HLS (m3u8) stream
+        command = [
+            'yt-dlp',
+            '--quiet',
+            '--no-warnings',
+            '-g',
+            f'https://youtube.com{video_id}'
+        ]
         
-        video_data = json.loads(result.stdout)
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        stream_url = result.stdout.strip()
         
-        # Εκτύπωση των διαθέσιμων formats (URL και ποιότητα)
-        for f in video_data.get('formats', []):
-            print(f"Quality: {f.get('format_note')} - URL: {f.get('url')}\n")
+        if stream_url:
+            print(stream_url)
+        else:
+            sys.exit(1)
             
-    except Exception as e:
-        print(f"Σφάλμα: {e}")
+    except subprocess.CalledProcessError:
+        # Αν το βίντεο δεν είναι live ή υπάρχει σφάλμα
+        sys.exit(1)
 
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Χρήση: python script.py <video_id>")
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        video_id = sys.argv[1]
+        get_youtube_stream(video_id)
     else:
-        get_youtube_streams(sys.argv[1])
+        sys.exit(1)
