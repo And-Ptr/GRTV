@@ -1,18 +1,13 @@
 import sys
 import subprocess
 
-def get_m3u8(url_or_id):
+def get_m3u8(video_id):
     try:
-        # Αν δεν είναι πλήρες URL, το φτιάχνουμε
-        if not url_or_id.startswith('http'):
-            if 'watch?v=' in url_or_id:
-                url = f"https://www.youtube.com/{url_or_id}"
-            elif url_or_id.startswith('@'):
-                url = f"https://www.youtube.com/{url_or_id}/live"
-            else:
-                url = f"https://youtube.com{url_or_id}"
+        # Αν είναι σκέτο ID, φτιάχνουμε το URL. Αν είναι ήδη URL, το αφήνουμε.
+        if "youtube.com" in video_id or "youtu.be" in video_id:
+            url = video_id
         else:
-            url = url_or_id
+            url = f"https://youtube.com{video_id}"
 
         command = [
             'yt-dlp',
@@ -22,8 +17,13 @@ def get_m3u8(url_or_id):
             '-g',
             url
         ]
+        
         result = subprocess.run(command, capture_output=True, text=True)
-        print(result.stdout.strip())
+        link = result.stdout.strip()
+        
+        if link:
+            print(link)
+            
     except Exception:
         pass
 
