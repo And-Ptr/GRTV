@@ -1,25 +1,23 @@
+import yt_dlp
 import sys
-import subprocess
 
 def get_youtube_stream(video_id):
+    # Κατασκευή του πλήρους URL
+    video_url = f"https://youtube.com{video_id}"
+    
+    # Ρυθμίσεις για να πάρουμε μόνο το link του stream (m3u8 αν είναι live)
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True,
+        'no_warnings': True,
+    }
+
     try:
-        command = [
-            'yt-dlp',
-            '--quiet',
-            '--no-warnings',
-            '--impersonate', 'chrome',  
-            '--cookies-from-browser', 'chrome', 
-            '-f', 'b',
-            '-g',
-            f'https://www.youtube.com/watch?v={video_id}'
-        ]
-        
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
-        stream_url = result.stdout.strip().split('\n')
-        
-        if stream_url:
-            print(stream_url[0])
-    except subprocess.CalledProcessError:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(video_url, download=False)
+            # Εκτύπωση μόνο του URL για να το πιάσει το GitHub Action
+            print(info['url'])
+    except Exception:
         sys.exit(1)
 
 if __name__ == "__main__":
