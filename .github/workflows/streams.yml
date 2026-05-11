@@ -15,11 +15,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install yt-dlp
+      - name: Install dependencies
         run: |
-          sudo curl -L https://github.com -o /usr/local/bin/yt-dlp
-          sudo chmod a+rx /usr/local/bin/yt-dlp
-          python3 -m pip install -U yt-dlp
+          python3 -m pip install -U pip
+          python3 -m pip install -U yt-dlp requests
 
       - name: config
         run: |
