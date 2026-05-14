@@ -1,7 +1,3 @@
-#EXTM3U url-tvg="https://ext.greektv.app/epg/epg.xml.gz"
-#EXTINF:-1  tvg-name="ertworld" tvg-logo="https://i.imgur.com/hzxuZaJ.png" group-title="📡 ΔΙΕΘΝΗ",ERT COSMOS
-https://702e2e484b144c71ba38bca0d41f37cd.msvdn.net/bpk-tv/ERTCosmos/default/index.m3u8
-#EXTINF:-1  tvg-name="???" tvg-logo="https://i.imgur.com/7bHv0tJ.png",_______ERROR CHANNEL______________________________________________________________________________________________________________________
+#EXTM3U 
+#EXTINF:-1  tvg-name="???" tvg-logo="https://i.imgur.com/7bHv0tJ.png",ERROR CHANNEL
 https://github.com/And73Smi/GRTV/raw/refs/heads/main/singal.mp4
-#EXTINF:-1  tvg-name="???" tvg-logo="https://i.imgur.com/W54kLLE.png" group-title="🌐 WEB TV",NETV EUROPE
-https://neon.streams.gr:8081/netveurope/index.m3u8
