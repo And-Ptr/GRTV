@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRTV Auto-Reconnect Player</title>
+    <!-- Φόρτωση Hls.js για αναπαραγωγή m3u8 ροών -->
+    <script src="jsdelivr.net"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; background: #111; color: #fff; font-family: sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Πλευρική Μπάρα Καναλιών */
+        #sidebar { width: 300px; background: #1a1a1a; display: flex; flex-direction: column; border-right: 2px solid #222; }
+        #sidebar h2 { padding: 15px; margin: 0; font-size: 18px; border-bottom: 1px solid #333; background: #111; text-align: center; }
+        #channel-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex-grow: 1; }
+        #channel-list li { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #262626; transition: 0.2s; font-size: 14px; }
+        #channel-list li:hover { background: #2a2a2a; }
+        #channel-list li.active { background: #0078d4; font-weight: bold; }
+
+        /* Περιοχή Αναπαραγωγής Βίντεο */
+        #player-container { flex-grow: 1; display: flex; justify-content: center; align-items: center; background: #000; position: relative; }
+        video { width: 100%; height: 100%; max-height: 100vh; object-fit: contain; }
+    </style>
+</head>
+<body>
+
+    <!-- Λίστα Καναλιών -->
+    <div id="sidebar">
+        <h2>Λίστα Καναλιών</h2>
+        <ul id="channel-list">
+            <li>Φόρτωση καναλιών...</li>
+        </ul>
+    </div>
+
+    <!-- Video Player -->
+    <div id="player-container">
+        <video id="video" controls autoplay muted></video>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const channelListContainer = document.getElementById('channel-list');
+        
+        // Οι πηγές που δώσατε
+        const m3u8PlaylistUrl = "https://raw.githubusercontent.com/And73Smi/GRTV/refs/heads/main/IPTV.m3u8";
+        const errorVideoUrl = "github.com";
+        
+        let hls = new Hls();
+        let currentStreamUrl = "";
+        let isChecking = false;
+        let checkInterval = null;
+
+        // 1. Λήψη και ανάλυση (parsing) της λίστας M3U8
+        async function fetchPlaylist() {
+            try {
+                const response = await fetch(m3u8PlaylistUrl);
+                const text = await response.text();
+                parseM3U(text);
+            } catch (error) {
+                channelListContainer.innerHTML = "<li style='color:red;'>Σφάλμα φόρτωσης λίστας!</li>";
+            }
+        }
+
+        function parseM3U(data) {
+            const lines = data.split('\n');
+            channelListContainer.innerHTML = ""; // Καθαρισμός
+            let currentName = "";
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (line.startsWith("#EXTINF:")) {
+                    // Εξαγωγή του ονόματος του καναλιού μετά το τελευταίο κόμμα
+                    const commaIndex = line.lastIndexOf(',');
+                    if (commaIndex !== -1) {
+                        currentName = line.substring(commaIndex + 1).trim();
+                    }
+                } else if (line.startsWith("http")) {
+                    // Αν βρεθεί το link, δημιουργούμε το στοιχείο στη λίστα
+                    const streamUrl = line;
+                    const li = document.createElement('li');
+                    li.textContent = currentName || "Άγνωστο Κανάλι";
+                    li.dataset.url = streamUrl;
+                    
+                    li.onclick = function() {
+                        // Αλλαγή ενεργού καναλιού
+                        document.querySelectorAll('#channel-list li').forEach(el => el.classList.remove('active'));
+                        li.classList.add('active');
+                        
+                        // Διακοπή προηγούμενου ελέγχου σφάλματος και φόρτωση νέας ροής
+                        clearInterval(checkInterval);
+                        isChecking = false;
+                        currentStreamUrl = streamUrl;
+                        loadStream(streamUrl);
+                    };
+
+                    channelListContainer.appendChild(li);
+                }
+            });
+
+            // Αυτόματη αναπαραγωγή του πρώτου καναλιού της λίστας κατά την εκκίνηση
+            if (channelListContainer.children.length > 0) {
+                channelListContainer.children[0].click();
+            }
+        }
+
+        // 2. Αναπαραγωγή της ροής HLS
+        function loadStream(url) {
+            if (Hls.isSupported()) {
+                hls.destroy();
+                hls = new Hls({ maxLoadingRetries: 1 });
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                
+                // Παρακολούθηση για fatal σφάλματα δικτύου (όταν πέφτει η ροή)
+                hls.on(Hls.Events.ERROR, function (event, data) {
+                    if (data.fatal) {
+                        handleStreamError();
+                    }
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                // Υποστήριξη για Safari/iOS
+                video.src = url;
+                video.onerror = function() {
+                    handleStreamError();
+                };
+            }
+        }
+
+        // 3. Διαχείριση Σφάλματος & Εμφάνιση Error Video
+        function handleStreamError() {
+            if (isChecking) return; 
+            isChecking = true;
+            
+            hls.destroy();
+            video.src = errorVideoUrl;
+            video.loop = true;
+            video.play().catch(e => console.log("Αναμονή για αλληλεπίδραση χρήστη..."));
+
+            // Έλεγχος ανά 5 δευτερόλεπτα αν η ροή επανήλθε
+            checkInterval = setInterval(() => {
+                console.log("Έλεγχος επανασύνδεσης για: " + currentStreamUrl);
+                
+                fetch(currentStreamUrl, { method: 'HEAD', cache: 'no-store' })
+                    .then(response => {
+                        if (response.ok) {
+                            clearInterval(checkInterval);
+                            isChecking = false;
+                            video.loop = false;
+                            loadStream(currentStreamUrl); // Αυτόματη επιστροφή στη ροή
+                        }
+                    })
+                    .catch(() => console.log("Η ροή είναι ακόμα εκτός λειτουργίας..."));
+            }, 5000); 
+        }
+
+        // Εκκίνηση της εφαρμογής
+        fetchPlaylist();
+    </script>
+</body>
+</html>
