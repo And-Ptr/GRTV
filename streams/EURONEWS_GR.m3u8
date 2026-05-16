@@ -1,1 +1,4 @@
-Error: ERROR: [youtube] uWIhV9gQClg: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies
+#EXTM3U
+#EXTINF:-1,Euronews Greece (offline)
+https://example.com/offline.ts
+
