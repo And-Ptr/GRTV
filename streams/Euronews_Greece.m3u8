@@ -1,1 +1,4 @@
-No streams available for this video.
+#EXTM3U
+#EXTINF:-1,Dailymotion x2j7kha (offline)
+https://example.com/offline.ts
+
