@@ -7,27 +7,22 @@ def get_dailymotion_stream(video_id: str):
     try:
         r = requests.get(api_url, timeout=5)
 
-        # Αν το video δεν υπάρχει ή είναι private
         if not r.ok:
             return fallback(video_id)
 
         data = r.json()
 
-        # Αν δεν υπάρχουν qualities → fallback
         if "qualities" not in data:
             return fallback(video_id)
 
-        # Προτιμάμε το "auto" (HLS adaptive)
         if "auto" in data["qualities"]:
             return data["qualities"]["auto"][0]["url"]
 
-        # Εναλλακτικά παίρνουμε το υψηλότερο διαθέσιμο
         qualities = data["qualities"]
-        for quality in ["1080", "720", "480", "380", "240"]:
-            if quality in qualities:
-                return qualities[quality][0]["url"]
+        for q in ["1080", "720", "480", "380", "240"]:
+            if q in qualities:
+                return qualities[q][0]["url"]
 
-        # Αν δεν βρεθεί τίποτα → fallback
         return fallback(video_id)
 
     except Exception:
