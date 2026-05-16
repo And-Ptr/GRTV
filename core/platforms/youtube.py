@@ -2,10 +2,9 @@ import yt_dlp
 import sys
 
 def get_youtube_stream(video_id):
-    # Κατασκευή του πλήρους URL
-    video_url = f"https://youtube.com{video_id}"
+    # Σωστό URL για YouTube video
+    video_url = f"https://www.youtube.com/watch?v={video_id}"
     
-    # Ρυθμίσεις για να πάρουμε μόνο το link του stream (m3u8 αν είναι live)
     ydl_opts = {
         'format': 'best',
         'quiet': True,
@@ -15,9 +14,9 @@ def get_youtube_stream(video_id):
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(video_url, download=False)
-            # Εκτύπωση μόνο του URL για να το πιάσει το GitHub Action
-            print(info['url'])
-    except Exception:
+            print(info['url'])  # Επιστρέφει το direct stream URL
+    except Exception as e:
+        print(f"Error: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
