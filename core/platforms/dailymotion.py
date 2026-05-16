@@ -1,38 +1,56 @@
-#!/usr/bin/python3
-import requests
 import sys
-import logging
+import requests
 
-def get_dailymotion_streams(video_id: str):
-    """
-    Retrieves Dailymotion streams based on the video ID.
+def get_dailymotion_stream(video_id: str):
+    api_url = f"https://www.dailymotion.com/player/metadata/video/{video_id}"
 
-    Args:
-        video_id (str): The ID of the Dailymotion video.
-
-    Returns:
-        None
-    """
     try:
-        url = f'https://www.dailymotion.com/player/metadata/video/{video_id}'
-        response = requests.get(url).json()
-        if 'qualities' not in response or not response['qualities']:
-            print("No streams available for this video.")
-        else:
-            stream_url = response['qualities']['auto'][0]['url']
-            m3u = requests.get(stream_url).text
-            print(m3u)
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Request error: {e}")
+        r = requests.get(api_url, timeout=5)
+
+        # Αν το video δεν υπάρχει ή είναι private
+        if not r.ok:
+            return fallback(video_id)
+
+        data = r.json()
+
+        # Αν δεν υπάρχουν qualities → fallback
+        if "qualities" not in data:
+            return fallback(video_id)
+
+        # Προτιμάμε το "auto" (HLS adaptive)
+        if "auto" in data["qualities"]:
+            return data["qualities"]["auto"][0]["url"]
+
+        # Εναλλακτικά παίρνουμε το υψηλότερο διαθέσιμο
+        qualities = data["qualities"]
+        for quality in ["1080", "720", "480", "380", "240"]:
+            if quality in qualities:
+                return qualities[quality][0]["url"]
+
+        # Αν δεν βρεθεί τίποτα → fallback
+        return fallback(video_id)
+
+    except Exception:
+        return fallback(video_id)
+
+
+def fallback(video_id: str):
+    return (
+        "#EXTM3U\n"
+        f"#EXTINF:-1,Dailymotion {video_id} (offline)\n"
+        "https://example.com/offline.ts\n"
+    )
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python dailymotion.py <video_id>")
         sys.exit(1)
-    except KeyError as e:
-        logging.error(f"Key error: {e}")
-        sys.exit(1)
-        
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python dailymotion.py stream")
-        sys.exit(1)
-    else:
-        video_id = sys.argv[1]
-        get_dailymotion_streams(video_id)
+
+    video_id = sys.argv[1]
+    print(get_dailymotion_stream(video_id))
+
+
+if __name__ == "__main__":
+    main()
+
