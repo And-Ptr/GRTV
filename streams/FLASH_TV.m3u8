@@ -1,2 +1,4 @@
-Stream not found for younowflashtv. Skipping...
-No stream available for younowflashtv. Moving to the next channel...
+#EXTM3U
+#EXTINF:-1,YOUNOWFLASHTV (offline)
+https://example.com/offline.ts
+

@@ -1,2 +1,4 @@
-Stream not found for fatsabooktv. Skipping...
-No stream available for fatsabooktv. Moving to the next channel...
+#EXTM3U
+#EXTINF:-1,FATSABOOKTV (offline)
+https://example.com/offline.ts
+

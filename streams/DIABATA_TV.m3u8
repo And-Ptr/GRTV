@@ -1,2 +1,4 @@
-Stream not found for diavata_tv. Skipping...
-No stream available for diavata_tv. Moving to the next channel...
+#EXTM3U
+#EXTINF:-1,DIAVATA_TV (offline)
+https://example.com/offline.ts
+

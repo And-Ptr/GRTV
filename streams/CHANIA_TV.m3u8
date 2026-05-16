@@ -1,2 +1,4 @@
-Stream not found for chanialivetv. Skipping...
-No stream available for chanialivetv. Moving to the next channel...
+#EXTM3U
+#EXTINF:-1,CHANIALIVETV (offline)
+https://example.com/offline.ts
+

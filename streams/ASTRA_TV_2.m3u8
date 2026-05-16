@@ -1,2 +1,4 @@
-Stream not found for astratv2019. Skipping...
-No stream available for astratv2019. Moving to the next channel...
+#EXTM3U
+#EXTINF:-1,ASTRATV2019 (offline)
+https://example.com/offline.ts
+
