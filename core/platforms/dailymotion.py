@@ -1,38 +1,46 @@
 #!/usr/bin/python3
 import requests
 import sys
-import logging
+import time
 
-def get_dailymotion_streams(video_id: str):
-    """
-    Retrieves Dailymotion streams based on the video ID.
+def get_dailymotion_streams(video_id):
+    meta_url = f"https://www.dailymotion.com/player/metadata/video/{video_id}"
 
-    Args:
-        video_id (str): The ID of the Dailymotion video.
-
-    Returns:
-        None
-    """
-    try:
-        url = f'https://www.dailymotion.com/player/metadata/video/{video_id}'
-        response = requests.get(url).json()
-        if 'qualities' not in response or not response['qualities']:
-            print("No streams available for this video.")
-        else:
-            stream_url = response['qualities']['auto'][0]['url']
-            m3u = requests.get(stream_url).text
-            print(m3u)
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Request error: {e}")
-        sys.exit(1)
-    except KeyError as e:
-        logging.error(f"Key error: {e}")
-        sys.exit(1)
-        
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python dailymotion.py stream")
-        sys.exit(1)
+    for _ in range(3):
+        try:
+            meta = requests.get(meta_url, timeout=5).json()
+            break
+        except:
+            time.sleep(1)
     else:
-        video_id = sys.argv[1]
-        get_dailymotion_streams(video_id)
+        return offline(video_id)
+
+    try:
+        stream_url = meta["qualities"]["auto"][0]["url"]
+    except:
+        return offline(video_id)
+
+    try:
+        m3u = requests.get(stream_url, timeout=5).text
+        if "#EXTM3U" not in m3u:
+            return offline(video_id)
+        return m3u
+    except:
+        return offline(video_id)
+
+
+def offline(video_id):
+    return (
+        "#EXTM3U\n"
+        f"#EXTINF:-1,Dailymotion {video_id} (offline)\n"
+        "https://example.com/offline.ts\n"
+    )
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python dailymotion.py <id>")
+        sys.exit(1)
+
+    print(get_dailymotion_streams(sys.argv[1]))
+
