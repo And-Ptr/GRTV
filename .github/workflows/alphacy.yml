@@ -2,7 +2,7 @@ name: alphacy
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # τρέχει κάθε 30 λεπτά
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -18,13 +18,13 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install system dependencies for Playwright
+      - name: Install system dependencies for Playwright (Ubuntu 24.04)
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             libnss3 \
             libxss1 \
-            libasound2 \
+            libasound2t64 \
             libatk1.0-0 \
             libatk-bridge2.0-0 \
             libcups2 \
@@ -38,7 +38,10 @@ jobs:
             libpangocairo-1.0-0 \
             libcairo2 \
             libatspi2.0-0 \
-            libgtk-3-0
+            libgtk-3-0 \
+            libxshmfence1 \
+            libglu1-mesa \
+            libgles2
 
       - name: Install Python dependencies
         run: |
