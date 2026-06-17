@@ -49,10 +49,13 @@ jobs:
           cd core/platforms
           python3 alphacy.py
 
-      - name: Commit changes
+      - name: Commit only if changed
         run: |
-          git add -A
-          git commit -m "streams updated" || echo "No changes to commit"
-
-      - name: Push changes
-        run: git push
+          if git diff --quiet; then
+            echo "🔹 No changes detected — skipping commit"
+          else
+            echo "🔸 Changes detected — committing"
+            git add -A
+            git commit -m "streams updated"
+            git push
+          fi
