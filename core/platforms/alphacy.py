@@ -1,8 +1,9 @@
 import asyncio
+import os
 from playwright.async_api import async_playwright
-from urllib.parse import urljoin
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
+OUTPUT_DIR = "../../streams"   # από core/platforms/
 OUTPUT_FILE = "alphacy.m3u8"
 
 async def fetch_stream():
@@ -16,41 +17,45 @@ async def fetch_stream():
 
         found_stream = None
 
-        # Καταγραφή network requests
-        def on_request(request):
+        def handle_request(request):
             nonlocal found_stream
             url = request.url
 
             if ".m3u8" in url:
                 found_stream = url
-                print(f"\n🎯 Βρέθηκε stream:\n{url}\n")
+                print(f"\n🎯 Βρέθηκε tokenized HLS:\n{url}\n")
 
-        page.on("request", on_request)
+        page.on("request", handle_request)
 
-        print("⏳ Περιμένω 10 δευτερόλεπτα να φορτώσει ο player...")
-        await page.wait_for_timeout(10000)
+        print("⏳ Περιμένω 20 δευτερόλεπτα...")
+        await page.wait_for_timeout(20000)
 
         await browser.close()
         return found_stream
 
 
-def create_m3u8_file(stream_url):
+def save_stream(url):
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
+
     content = f"""#EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=3134643,FRAME-RATE=25,RESOLUTION=1920x1080,CODECS="avc1.42c01f,mp4a.40.2"
-{stream_url}
+#EXT-X-STREAM-INF:BANDWIDTH=3000000
+{url}
 """
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+
+    with open(path, "w", encoding="utf-8") as f:
         f.write(content)
 
-    print(f"📁 Το αρχείο δημιουργήθηκε: {OUTPUT_FILE}")
+    print(f"📁 Το αρχείο γράφτηκε στο: {path}")
 
 
 if __name__ == "__main__":
     stream = asyncio.run(fetch_stream())
 
     if stream:
-        create_m3u8_file(stream)
+        save_stream(stream)
         print("✅ Ολοκληρώθηκε.")
     else:
-        print("❌ Δεν βρέθηκε .m3u8 — πιθανό DRM ή tokenized stream.")
+        print("❌ Δεν βρέθηκε tokenized HLS.")
