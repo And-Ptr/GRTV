@@ -3,7 +3,7 @@ import os
 from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
-OUTPUT_DIR = "../../streams"   # από core/platforms/
+OUTPUT_DIR = "../../streams"
 OUTPUT_FILE = "alphacy.m3u8"
 
 async def fetch_stream():
@@ -12,23 +12,26 @@ async def fetch_stream():
         context = await browser.new_context()
         page = await context.new_page()
 
-        print("🔍 Φόρτωση σελίδας...")
-        await page.goto(SITE_URL, timeout=60000)
-
         found_stream = None
 
         def handle_request(request):
             nonlocal found_stream
             url = request.url
-
-            if ".m3u8" in url:
+            if ".m3u8" in url and "playlist" not in url:
                 found_stream = url
-                print(f"\n🎯 Βρέθηκε tokenized HLS:\n{url}\n")
+                print(f"\n🎯 Βρέθηκε HLS:\n{url}\n")
 
+        # ΒΑΖΕΙΣ ΤΟΝ LISTENER ΠΡΙΝ ΤΟ GOTO
         page.on("request", handle_request)
 
-        print("⏳ Περιμένω 20 δευτερόλεπτα...")
-        await page.wait_for_timeout(20000)
+        print("🔍 Φόρτωση σελίδας...")
+        await page.goto(SITE_URL, timeout=60000)
+
+        # ΠΕΡΙΜΕΝΕ ΜΕΧΡΙ ΝΑ ΒΡΕΘΕΙ ΤΟ STREAM
+        for _ in range(60):  # 60 × 1s = 60 seconds
+            if found_stream:
+                break
+            await asyncio.sleep(1)
 
         await browser.close()
         return found_stream
@@ -36,7 +39,6 @@ async def fetch_stream():
 
 def save_stream(url):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-
     path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
 
     content = f"""#EXTM3U
