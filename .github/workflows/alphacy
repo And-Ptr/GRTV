@@ -1,0 +1,35 @@
+name: alphacy
+
+on:
+  # Uncomment to enable schedule
+  # schedule:
+  #   - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "Update Bot"
+
+      - name: Install dependencies & run script
+        run: |
+          cd ./core/platforms/
+          pip3 install -r requirements.txt || true
+          pip3 install beautifulsoup4
+          python3 alphacy.py
+
+      - name: Commit changes
+        run: |
+          git add -A
+          git commit -m "streams updated" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
+          git push
