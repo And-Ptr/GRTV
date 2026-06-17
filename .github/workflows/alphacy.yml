@@ -1,37 +1,62 @@
 name: alphacy
 
 on:
+  schedule:
+    - cron: "*/30 * * * *"   # τρέχει κάθε 30 λεπτά
   workflow_dispatch:
 
 jobs:
-  build:
+  run:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Configure Git
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install system dependencies for Playwright
         run: |
-          git config --global user.email "your-email@example.com"
-          git config --global user.name "Update Bot"
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 \
+            libxss1 \
+            libasound2 \
+            libatk1.0-0 \
+            libatk-bridge2.0-0 \
+            libcups2 \
+            libdrm2 \
+            libxkbcommon0 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxrandr2 \
+            libgbm1 \
+            libpango-1.0-0 \
+            libpangocairo-1.0-0 \
+            libcairo2 \
+            libatspi2.0-0 \
+            libgtk-3-0
 
       - name: Install Python dependencies
         run: |
-          pip3 install playwright
-          pip3 install beautifulsoup4
+          pip install playwright
+          pip install beautifulsoup4
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright browsers
         run: playwright install chromium
 
-      - name: Run script
+      - name: Run alphacy script
         run: |
-          cd ./core/platforms/
+          cd core/platforms/
           python3 alphacy.py
 
       - name: Commit changes
         run: |
+          git config --global user.email "bot@example.com"
+          git config --global user.name "Stream Bot"
           git add -A
-          git commit -m "streams updated" || echo "No changes to commit"
-
-      - name: Push changes
-        run: git push
+          git commit -m "streams updated" || echo "No changes"
+          git push
