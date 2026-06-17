@@ -10,13 +10,21 @@ FORCED_DOMAIN = "am8.cloudskep.com"
 PROFILE_DIR = "./alphacy_profile"
 
 MAX_RETRIES = 5
-WAIT_TIME = 25000  # 25 seconds
+WAIT_TIME = 20000  # 20 seconds
 
 async def fetch_stream():
     async with async_playwright() as p:
         browser = await p.chromium.launch_persistent_context(
             PROFILE_DIR,
-            headless=False,
+            headless=True,  # <-- ΠΡΕΠΕΙ για GitHub Actions
+            args=[
+                "--use-gl=swiftshader",
+                "--ignore-gpu-blocklist",
+                "--enable-webgl",
+                "--enable-accelerated-2d-canvas",
+                "--disable-dev-shm-usage",
+                "--no-sandbox",
+            ],
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
             viewport={"width": 1920, "height": 1080},
             locale="el-GR",
