@@ -2,6 +2,8 @@ name: alphacy
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"   # Κάθε 30 λεπτά
 
 jobs:
   build:
