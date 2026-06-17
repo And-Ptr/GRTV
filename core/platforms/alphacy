@@ -18,9 +18,13 @@ def get_alpha_stream():
 
         page.on("request", handle_request)
 
-        time.sleep(10)
-        browser.close()
+        # Wait up to 30 seconds for the stream to appear
+        for _ in range(30):
+            if found_url:
+                break
+            time.sleep(1)
 
+        browser.close()
         return found_url
 
 if __name__ == "__main__":
@@ -29,3 +33,4 @@ if __name__ == "__main__":
         print(url)
     else:
         print("# ERROR: No m3u8 found")
+
