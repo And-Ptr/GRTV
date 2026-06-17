@@ -6,6 +6,9 @@ SITE_URL = "https://www.alphacyprus.com.cy/live"
 OUTPUT_DIR = "../../streams"
 OUTPUT_FILE = "alphacy.m3u8"
 
+# Προτεραιότητα CDN
+PREFERRED = ["am8", "eu", "edge", "us"]
+
 async def fetch_stream():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
@@ -17,9 +20,22 @@ async def fetch_stream():
         def handle_request(request):
             nonlocal found_stream
             url = request.url
-            if ".m3u8" in url and "playlist" not in url:
-                found_stream = url
-                print(f"\n🎯 Βρέθηκε HLS:\n{url}\n")
+
+            # Καταγραφή όλων των HLS για debugging
+            if ".m3u8" in url:
+                print(f"📡 HLS request: {url}")
+
+            # Αν ήδη βρέθηκε stream, μην συνεχίζεις
+            if found_stream:
+                return
+
+            # Έλεγχος προτεραιότητας CDN
+            if ".m3u8" in url:
+                for key in PREFERRED:
+                    if key in url:
+                        found_stream = url
+                        print(f"\n🎯 Βρέθηκε HLS ({key}):\n{url}\n")
+                        return
 
         # Listener ΠΡΙΝ το goto
         page.on("request", handle_request)
