@@ -6,8 +6,6 @@ SITE_URL = "https://www.alphacyprus.com.cy/live"
 OUTPUT_DIR = "../../streams"
 OUTPUT_FILE = "alphacy.m3u8"
 
-FORCED_DOMAIN = "am8.cloudskep.com"   # <-- το σωστό domain
-
 async def fetch_stream():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
@@ -25,43 +23,32 @@ async def fetch_stream():
 
             if ".m3u8" in url:
                 found_stream = url
-                print(f"\n🎯 Βρέθηκε tokenized HLS:\n{url}\n")
+                print(f"\n🎯 Βρέθηκε πλήρες tokenized HLS:\n{url}\n")
 
         page.on("request", handle_request)
 
-        print("⏳ Περιμένω 20 δευτερόλεπτα...")
+        print("⏳ Περιμένω 20 δευτερόλεπτα για να φορτωθεί το stream...")
         await page.wait_for_timeout(20000)
 
         await browser.close()
         return found_stream
 
 
-def normalize_domain(url):
-    """
-    Αντικαθιστά το domain με το σωστό (am8.cloudskep.com)
-    """
-    import re
-    return re.sub(r"https://[^/]+/", f"https://{FORCED_DOMAIN}/", url)
-
-
 def save_stream(url):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-
     path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
-
-    fixed_url = normalize_domain(url)
 
     content = f"""#EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=3000000
-{fixed_url}
+{url}
 """
 
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
 
     print(f"📁 Το αρχείο γράφτηκε στο: {path}")
-    print(f"🔗 Τελικό URL: {fixed_url}")
+    print(f"🔗 Τελικό URL: {url}")
 
 
 if __name__ == "__main__":
