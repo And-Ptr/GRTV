@@ -2,7 +2,7 @@ name: Extract M3U8 URL
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # Τρέχει κάθε 10 λεπτά
+    - cron: "*/10 * * * *"   # Κάθε 10 λεπτά
   workflow_dispatch:
 
 jobs:
@@ -12,16 +12,24 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Playwright
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Puppeteer
+        run: npm install puppeteer
+
+      - name: Run script
+        run: node get_m3u8_puppeteer.js
+
+      - name: Commit updated m3u8 file
         run: |
-          pip install playwright
-          playwright install chromium
-
-      - name: Run Playwright script
-        run: python get_m3u8_playwright.py
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add latest_m3u8.txt
+          git commit -m "Update m3u8 URL" || echo "No changes to commit"
+          git push
