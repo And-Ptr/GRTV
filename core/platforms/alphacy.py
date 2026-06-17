@@ -21,14 +21,14 @@ async def fetch_stream():
                 found_stream = url
                 print(f"\n🎯 Βρέθηκε HLS:\n{url}\n")
 
-        # ΒΑΖΕΙΣ ΤΟΝ LISTENER ΠΡΙΝ ΤΟ GOTO
+        # Listener ΠΡΙΝ το goto
         page.on("request", handle_request)
 
         print("🔍 Φόρτωση σελίδας...")
         await page.goto(SITE_URL, timeout=60000)
 
-        # ΠΕΡΙΜΕΝΕ ΜΕΧΡΙ ΝΑ ΒΡΕΘΕΙ ΤΟ STREAM
-        for _ in range(60):  # 60 × 1s = 60 seconds
+        # Περιμένει μέχρι 60 δευτερόλεπτα για το stream
+        for _ in range(60):
             if found_stream:
                 break
             await asyncio.sleep(1)
