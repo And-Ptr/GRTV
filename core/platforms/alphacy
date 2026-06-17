@@ -1,35 +1,31 @@
-name: Extract M3U8 URL
+from playwright.sync_api import sync_playwright
+import time
 
-on:
-  schedule:
-    - cron: "*/10 * * * *"   # Κάθε 10 λεπτά
-  workflow_dispatch:
+def get_alpha_stream():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
 
-jobs:
-  run-script:
-    runs-on: ubuntu-latest
+        page.goto("https://www.alphacyprus.com.cy/live", wait_until="networkidle")
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        found_url = None
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+        def handle_request(request):
+            nonlocal found_url
+            url = request.url
+            if ".m3u8" in url:
+                found_url = url
 
-      - name: Install Puppeteer
-        run: npm install puppeteer
+        page.on("request", handle_request)
 
-      - name: Run script
-        run: node get_m3u8_puppeteer.js
+        time.sleep(10)
+        browser.close()
 
-      - name: Commit updated m3u8 file
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add latest_m3u8.txt
-          git commit -m "Update m3u8 URL" || echo "No changes to commit"
-          git push
+        return found_url
+
+if __name__ == "__main__":
+    url = get_alpha_stream()
+    if url:
+        print(url)
+    else:
+        print("# ERROR: No m3u8 found")
