@@ -29,7 +29,8 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install -U pip
-          python3 -m pip install -U yt-dlp requests
+          python3 -m pip install -U yt-dlp requests playwright
+          playwright install chromium
 
       - name: Configure git
         run: |
@@ -67,7 +68,6 @@ jobs:
           python3 twitch.py midnightsumo > ../../streams/SUMO.m3u8
           python3 twitch.py xtvision > ../../streams/XTVISION.m3u8
           python3 twitch.py xtvision2 > ../../streams/XTVISION_2.m3u8
-          
 
           # Dailymotion Streams
           python3 dailymotion.py x8p5u0u > ../../streams/CGTN.m3u8
@@ -76,11 +76,11 @@ jobs:
           # YouTube Streams
           python3 youtube.py uWIhV9gQClg > ../../streams/EURONEWS_GR.m3u8
 
+          # Alpha Cyprus (Playwright)
+          python3 alphacy.py > ../../streams/ALPHA_CY.m3u8
+
       - name: Commit & Push changes
         run: |
           git add -A
           git commit -m "streams updated" || echo "No changes"
           git push
-
-
-
