@@ -12,6 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 🔧 FIX: Σπάει το apt-get update λόγω Azure mirrors
+      - name: Fix broken Azure mirrors
+        run: |
+          sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu/|http://archive.ubuntu.com/ubuntu/|g' /etc/apt/sources.list
+          sudo sed -i 's|http://security.ubuntu.com/ubuntu|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
