@@ -1,82 +1,74 @@
 import asyncio
 import os
+import aiohttp
+from aiohttp import web
 from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
-OUTPUT_DIR = "../../streams"
-OUTPUT_FILE = "alphacy.m3u8"
-
 PREFERRED = ["am8", "eu", "edge", "us"]
 
+token_url = None
+session_cookies = None
+headers = {
+    "Referer": "https://www.alphacyprus.com.cy/",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"
+}
+
 async def fetch_stream():
+    global token_url, session_cookies
+
     async with async_playwright() as p:
-        browser = await p.chromium.launch(
-            headless=True,
-            args=["--disable-web-security", "--no-sandbox"]
-        )
+        browser = await p.chromium.launch(headless=True)
         context = await browser.new_context()
         page = await context.new_page()
 
-        found_stream = None
-
-        def on_request(request):
-            nonlocal found_stream
-            url = request.url
-            if ".m3u8" in url and not found_stream:
-                for key in PREFERRED:
-                    if key in url:
-                        found_stream = url
-                        print(f"🎯 FOUND (request) [{key}] → {url}")
-                        return
+        found = None
 
         async def on_response(response):
-            nonlocal found_stream
+            nonlocal found
             url = response.url
-            if ".m3u8" in url and not found_stream:
+            if ".m3u8" in url:
                 for key in PREFERRED:
                     if key in url:
-                        found_stream = url
-                        print(f"🎯 FOUND (response) [{key}] → {url}")
+                        found = url
                         return
 
-        page.on("request", on_request)
         page.on("response", on_response)
+        await page.goto(SITE_URL)
 
-        print("🔍 Loading page...")
-        await page.goto(SITE_URL, timeout=60000)
-
-        for _ in range(60):
-            if found_stream:
+        for _ in range(30):
+            if found:
                 break
             await asyncio.sleep(1)
 
+        cookies = await context.cookies()
+        session_cookies = {c["name"]: c["value"] for c in cookies}
+
         await browser.close()
-        return found_stream
+        token_url = found
 
 
-def save_stream(url):
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
+async def proxy_handler(request):
+    global token_url, session_cookies
 
-    # ✔️ VALID MASTER PLAYLIST (VLC compatible)
-    content = f"""#EXTM3U
-#EXT-X-VERSION:3
+    path = request.match_info["path"]
+    target = token_url.rsplit("/", 1)[0] + "/" + path
 
-#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080,CODECS="avc1.640028,mp4a.40.2",FRAME-RATE=25.000,CLOSED-CAPTIONS=NONE
-{url}
-"""
+    async with aiohttp.ClientSession() as session:
+        async with session.get(target, headers=headers, cookies=session_cookies) as resp:
+            data = await resp.read()
+            return web.Response(body=data, content_type=resp.headers.get("Content-Type"))
 
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(content)
 
-    print(f"📁 Saved to: {path}")
+async def start_server():
+    await fetch_stream()
+
+    app = web.Application()
+    app.router.add_get("/{path:.*}", proxy_handler)
+
+    print("🚀 Proxy running at: http://localhost:8080/alphacy.m3u8")
+    web.run_app(app, port=8080)
 
 
 if __name__ == "__main__":
-    stream = asyncio.run(fetch_stream())
-
-    if stream:
-        save_stream(stream)
-        print("✅ Completed.")
-    else:
-        print("❌ No tokenized HLS found.")
+    asyncio.run(start_server())
