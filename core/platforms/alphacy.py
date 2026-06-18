@@ -1,14 +1,3 @@
-import asyncio
-import os
-from playwright.async_api import async_playwright
-
-SITE_URL = "https://www.alphacyprus.com.cy/live"
-OUTPUT_DIR = "../../streams"
-OUTPUT_FILE = "alphacy.m3u8"
-
-# Προτεραιότητα CDN
-PREFERRED = ["am8", "eu", "edge", "us"]
-
 async def fetch_stream():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
@@ -17,28 +6,21 @@ async def fetch_stream():
 
         found_stream = None
 
-        def handle_request(request):
+        async def handle_response(response):
             nonlocal found_stream
-            url = request.url
+            url = response.url
 
-            # Καταγραφή όλων των HLS για debugging
             if ".m3u8" in url:
-                print(f"📡 HLS request: {url}")
+                print(f"📡 HLS response: {url}")
 
-            # Αν ήδη βρέθηκε stream, μην συνεχίζεις
-            if found_stream:
-                return
-
-            # Έλεγχος προτεραιότητας CDN
-            if ".m3u8" in url:
+                # Προτεραιότητα CDN
                 for key in PREFERRED:
                     if key in url:
                         found_stream = url
                         print(f"\n🎯 Βρέθηκε HLS ({key}):\n{url}\n")
                         return
 
-        # Listener ΠΡΙΝ το goto
-        page.on("request", handle_request)
+        page.on("response", handle_response)
 
         print("🔍 Φόρτωση σελίδας...")
         await page.goto(SITE_URL, timeout=60000)
@@ -51,29 +33,3 @@ async def fetch_stream():
 
         await browser.close()
         return found_stream
-
-
-def save_stream(url):
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
-
-    content = f"""#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=3000000
-{url}
-"""
-
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(content)
-
-    print(f"📁 Το αρχείο γράφτηκε στο: {path}")
-
-
-if __name__ == "__main__":
-    stream = asyncio.run(fetch_stream())
-
-    if stream:
-        save_stream(stream)
-        print("✅ Ολοκληρώθηκε.")
-    else:
-        print("❌ Δεν βρέθηκε tokenized HLS.")
