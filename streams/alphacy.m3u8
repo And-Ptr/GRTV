@@ -1,4 +1,5 @@
 #EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=3000000
-https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4532022&wmsAuthSign=c2VydmVyX3RpbWU9Ni8xOC8yMDI2IDc6Mjg6MzEgUE0maGFzaF92YWx1ZT1qdGtwYkdkQW9hTWF1aVVkN1FEdnZBPT0mdmFsaWRtaW51dGVzPTMw
+
+#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1920x1080,CODECS="avc1.640028,mp4a.40.2",FRAME-RATE=25.000,CLOSED-CAPTIONS=NONE
+https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4532104&wmsAuthSign=c2VydmVyX3RpbWU9Ni8xOC8yMDI2IDc6MzM6MDAgUE0maGFzaF92YWx1ZT11QUdITm5nWUdhWmczbnBwLzdXUndnPT0mdmFsaWRtaW51dGVzPTMw
