@@ -1,13 +1,5 @@
-import asyncio
-import os
-from playwright.async_api import async_playwright
-
-SITE_URL = "https://www.alphacyprus.com.cy/live"
-OUTPUT_DIR = "../../streams"
-OUTPUT_FILE = "alphacy.m3u8"
-
-# Προτεραιότητα CDN
-PREFERRED = ["am8", "eu", "edge", "us"]
+BEST = None
+ALL_STREAMS = []
 
 async def fetch_stream():
     async with async_playwright() as p:
@@ -18,83 +10,40 @@ async def fetch_stream():
         context = await browser.new_context()
         page = await context.new_page()
 
-        found_stream = None
+        def check(url):
+            nonlocal BEST
+            ALL_STREAMS.append(url)
 
-        # -----------------------------
-        # 1) ΠΙΑΝΕΙ ΟΛΑ ΤΑ REQUESTS
-        # -----------------------------
-        def on_request(request):
-            nonlocal found_stream
-            url = request.url
+            for key in PREFERRED:
+                if key in url:
+                    BEST = url
+                    print(f"🎯 MATCH [{key}] → {url}")
+                    break
 
-            if ".m3u8" in url:
-                print(f"📡 REQUEST HLS: {url}")
+        page.on("request", lambda req: ".m3u8" in req.url and check(req.url))
+        page.on("response", lambda res: ".m3u8" in res.url and check(res.url))
 
-                if not found_stream:
-                    for key in PREFERRED:
-                        if key in url:
-                            found_stream = url
-                            print(f"🎯 FOUND (request) [{key}] → {url}")
-                            return
-
-        page.on("request", on_request)
-
-        # -----------------------------
-        # 2) ΠΙΑΝΕΙ ΟΛΑ ΤΑ RESPONSES
-        # -----------------------------
-        async def on_response(response):
-            nonlocal found_stream
-            url = response.url
-
-            if ".m3u8" in url:
-                print(f"📡 RESPONSE HLS: {url}")
-
-                if not found_stream:
-                    for key in PREFERRED:
-                        if key in url:
-                            found_stream = url
-                            print(f"🎯 FOUND (response) [{key}] → {url}")
-                            return
-
-        page.on("response", on_response)
-
-        # -----------------------------
-        # 3) ΦΟΡΤΩΣΗ ΣΕΛΙΔΑΣ
-        # -----------------------------
         print("🔍 Loading page...")
         await page.goto(SITE_URL, timeout=60000)
 
-        # Περιμένει μέχρι 60 δευτερόλεπτα
-        for _ in range(60):
-            if found_stream:
-                break
-            await asyncio.sleep(1)
+        # Περιμένει να εμφανιστεί το video
+        await page.wait_for_selector("video", timeout=30000)
+
+        # Πατάει play
+        try:
+            await page.click("video")
+        except:
+            pass
+
+        # Περιμένει 5 δευτερόλεπτα για ΟΛΑ τα CDN
+        await asyncio.sleep(5)
 
         await browser.close()
-        return found_stream
 
+        # Προτεραιότητα: am8 → eu → edge → us
+        for key in PREFERRED:
+            for url in ALL_STREAMS:
+                if key in url:
+                    return url
 
-def save_stream(url):
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
-
-    content = f"""#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=3000000
-{url}
-"""
-
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(content)
-
-    print(f"📁 Saved to: {path}")
-
-
-if __name__ == "__main__":
-    stream = asyncio.run(fetch_stream())
-
-    if stream:
-        save_stream(stream)
-        print("✅ Completed.")
-    else:
-        print("❌ No tokenized HLS found.")
+        return None
