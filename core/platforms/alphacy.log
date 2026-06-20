@@ -108,3 +108,57 @@
 [2026-06-20 19:46:16] ⏳ Retrying...
 
 [2026-06-20 19:46:18] ❌ No valid am8 HLS found after retries.
+[2026-06-20 19:50:43] 
+================= NEW RUN =================
+[2026-06-20 19:50:43] 🔄 Attempt 1 starting...
+[2026-06-20 19:50:45] 📡 RAW HLS: https://l4.cloudskep.com/alphacyp/acy/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:50:45] 📡 BODY HLS CANDIDATE: https://us6.cloudskep.com/alphacyp/acy/l4/fhd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:50:46] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:50:49] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:50:51] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:50:56] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:50:59] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:04] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:07] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:12] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:15] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:20] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:23] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595619&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTA6NDUgUE0maGFzaF92YWx1ZT10TlFMZnpXQWR5dmFFN3JrZ3dQMTZ3PT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:26] ⚠ No valid am8 stream found in this attempt
+[2026-06-20 19:51:26] ⏳ Retrying...
+
+[2026-06-20 19:51:28] 🔄 Attempt 2 starting...
+[2026-06-20 19:51:30] 📡 RAW HLS: https://l4.cloudskep.com/alphacyp/acy/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:30] 📡 BODY HLS CANDIDATE: https://us6.cloudskep.com/alphacyp/acy/l4/fhd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:30] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:34] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:38] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:42] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:46] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:50] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:54] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:51:58] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:02] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:06] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:10] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595645&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTE6MjkgUE0maGFzaF92YWx1ZT1pdDRvVGFJSmllRStVMXkzaVNObTBBPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:10] ⚠ No valid am8 stream found in this attempt
+[2026-06-20 19:52:10] ⏳ Retrying...
+
+[2026-06-20 19:52:12] 🔄 Attempt 3 starting...
+[2026-06-20 19:52:14] 📡 RAW HLS: https://l4.cloudskep.com/alphacyp/acy/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:14] 📡 BODY HLS CANDIDATE: https://us6.cloudskep.com/alphacyp/acy/l4/fhd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:14] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:17] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:22] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:25] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:30] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:33] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:38] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:41] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:46] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:49] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:54] 📡 RAW HLS: https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4595674&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMC8yMDI2IDc6NTI6MTMgUE0maGFzaF92YWx1ZT0xMDdyd2pNbm5ZdlIrSVZ1TERhS01nPT0mdmFsaWRtaW51dGVzPTMw
+[2026-06-20 19:52:54] ⚠ No valid am8 stream found in this attempt
+[2026-06-20 19:52:54] ⏳ Retrying...
+
+[2026-06-20 19:52:56] ❌ No valid am8 HLS found after retries.
