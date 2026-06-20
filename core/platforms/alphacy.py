@@ -1,6 +1,7 @@
 import asyncio
 import os
 import datetime
+import re
 from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
@@ -8,10 +9,16 @@ OUTPUT_DIR = "../../streams"
 OUTPUT_FILE = "alphacy.m3u8"
 LOG_FILE = "alphacy.log"
 
-PREFERRED = ["am8", "eu", "edge", "us"]
+# ΜΟΝΟ το σωστό CDN
+TARGET_CDN = "am8"
+
+# Πόσες προσπάθειες να κάνει
 RETRIES = 3
 
 
+# -----------------------------
+# LOGGING
+# -----------------------------
 def log(msg):
     timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
     line = f"{timestamp} {msg}"
@@ -21,8 +28,21 @@ def log(msg):
         f.write(line + "\n")
 
 
+# -----------------------------
+# VALIDATION: sessionid >= 8 digits
+# -----------------------------
+def is_valid_session(url):
+    m = re.search(r"nimblesessionid=(\d+)", url)
+    if not m:
+        return False
+    return len(m.group(1)) >= 8
+
+
+# -----------------------------
+# ΜΙΑ ΠΡΟΣΠΑΘΕΙΑ FETCH
+# -----------------------------
 async def attempt_fetch(attempt):
-    log(f"🔄 Attempt {attempt} loading page...")
+    log(f"🔄 Attempt {attempt} starting...")
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(
@@ -42,6 +62,7 @@ async def attempt_fetch(attempt):
         page.on("request", lambda req: record(req.url))
         page.on("response", lambda res: record(res.url))
 
+        # Φόρτωση σελίδας
         try:
             await page.goto(SITE_URL, timeout=60000)
         except Exception as e:
@@ -61,22 +82,26 @@ async def attempt_fetch(attempt):
         except:
             pass
 
-        # Περιμένει 5 δευτερόλεπτα για ΟΛΑ τα CDN
-        await asyncio.sleep(5)
+        # Περιμένει αρκετά ώστε να εμφανιστεί το am8
+        await asyncio.sleep(8)
 
         await browser.close()
 
-        # Επιλογή CDN με βάση προτεραιότητα
-        for key in PREFERRED:
-            for url in ALL_STREAMS:
-                if key in url:
-                    log(f"🎯 SELECTED [{key}] → {url}")
-                    return url
+        # Φιλτράρει ΜΟΝΟ am8 + valid sessionid
+        valid = [u for u in ALL_STREAMS if TARGET_CDN in u and is_valid_session(u)]
 
-        log("⚠ No preferred CDN found in this attempt")
+        if valid:
+            best = valid[-1]  # το τελευταίο είναι πάντα το σωστό
+            log(f"🎯 SELECTED VALID STREAM → {best}")
+            return best
+
+        log("⚠ No valid am8 stream found in this attempt")
         return None
 
 
+# -----------------------------
+# AUTO‑RETRY WRAPPER
+# -----------------------------
 async def fetch_stream():
     for attempt in range(1, RETRIES + 1):
         result = await attempt_fetch(attempt)
@@ -88,6 +113,9 @@ async def fetch_stream():
     return None
 
 
+# -----------------------------
+# SAVE OUTPUT
+# -----------------------------
 def save_stream(url):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
@@ -104,6 +132,9 @@ def save_stream(url):
     log(f"📁 Saved to: {path}")
 
 
+# -----------------------------
+# MAIN
+# -----------------------------
 if __name__ == "__main__":
     log("\n================= NEW RUN =================")
 
@@ -113,4 +144,4 @@ if __name__ == "__main__":
         save_stream(stream)
         log("✅ Completed.")
     else:
-        log("❌ No tokenized HLS found after retries.")
+        log("❌ No valid am8 HLS found after retries.")
