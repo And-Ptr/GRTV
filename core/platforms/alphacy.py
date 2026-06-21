@@ -5,7 +5,9 @@ import time
 from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
-OUTPUT_DIR = "../../streams"
+
+# ΣΩΣΤΟ PATH ΓΙΑ ΤΟΝ ΦΑΚΕΛΟ GRTV/streams
+OUTPUT_DIR = "streams"
 OUTPUT_FILE = "alphacy.m3u8"
 
 
@@ -18,7 +20,7 @@ def is_master_playlist(url):
     if "playlist.m3u8" not in url:
         return False
 
-    m = re.search(r"nimblesessionid=(\\d+)", url)
+    m = re.search(r"nimblesessionid=(\d+)", url)
     if not m:
         return False
 
@@ -74,12 +76,12 @@ async def fetch_stream():
         except:
             pass
 
-        # Περιμένει να φορτωθούν όλα τα CDN requests
-        await asyncio.sleep(5)
+        print("Waiting for player to load...")
+        await asyncio.sleep(15)
 
         print("Waiting for master playlist...")
 
-        timeout = time.time() + 60  # 60 seconds max wait
+        timeout = time.time() + 90
         master_url = None
 
         while time.time() < timeout:
