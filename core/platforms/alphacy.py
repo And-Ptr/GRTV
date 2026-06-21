@@ -7,7 +7,7 @@ from playwright.async_api import async_playwright
 SITE_URL = "https://www.alphacyprus.com.cy/live"
 
 # ΣΩΣΤΟ PATH ΓΙΑ ΤΟΝ ΦΑΚΕΛΟ GRTV/streams
-OUTPUT_DIR = "streams"
+OUTPUT_DIR = "../streams"
 OUTPUT_FILE = "alphacy.m3u8"
 
 
