@@ -1,5 +1,7 @@
 import asyncio
 import os
+import re
+import time
 from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
@@ -7,6 +9,22 @@ OUTPUT_DIR = "../../streams"
 OUTPUT_FILE = "alphacy.m3u8"
 
 PREFERRED = ["am8", "eu", "edge", "us"]
+
+
+def is_master_playlist(url):
+    """
+    Ελέγχει αν το URL είναι το κανονικό master playlist:
+    - περιέχει playlist.m3u8
+    - έχει nimblesessionid με 8 ψηφία
+    """
+    if "playlist.m3u8" not in url:
+        return False
+
+    m = re.search(r"nimblesessionid=(\d+)", url)
+    if not m:
+        return False
+
+    return len(m.group(1)) == 8
 
 
 async def fetch_stream():
@@ -23,9 +41,7 @@ async def fetch_stream():
             ]
         )
 
-        # ❗ Χωρίς autoplay permission (δεν υποστηρίζεται)
         context = await browser.new_context()
-
         page = await context.new_page()
 
         ALL_STREAMS = []
@@ -60,19 +76,33 @@ async def fetch_stream():
         except:
             pass
 
-        # Περιμένει να φορτώσουν όλα τα CDN
-        await asyncio.sleep(10)
+        # Περιμένει να φορτωθούν όλα τα CDN requests
+        await asyncio.sleep(5)
+
+        print("⏳ Waiting for master playlist...")
+
+        timeout = time.time() + 60  # 60 seconds max wait
+        master_url = None
+
+        while time.time() < timeout:
+            for url in ALL_STREAMS:
+                if is_master_playlist(url):
+                    master_url = url
+                    break
+
+            if master_url:
+                break
+
+            await asyncio.sleep(1)
 
         await browser.close()
 
-        # Επιλογή CDN με βάση προτεραιότητα
-        for key in PREFERRED:
-            for url in ALL_STREAMS:
-                if key in url:
-                    print(f"🎯 SELECTED [{key}] → {url}")
-                    return url
+        if not master_url:
+            print("❌ Master playlist not found (8-digit session missing)")
+            return None
 
-        return None
+        print(f"🎯 MASTER PLAYLIST FOUND → {master_url}")
+        return master_url
 
 
 def save_stream(url):
@@ -88,14 +118,4 @@ def save_stream(url):
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
 
-    print(f"📁 Saved to: {path}")
-
-
-if __name__ == "__main__":
-    stream = asyncio.run(fetch_stream())
-
-    if stream:
-        save_stream(stream)
-        print("✅ Completed.")
-    else:
-        print("❌ No tokenized HLS found.")
+    print(f"📁
