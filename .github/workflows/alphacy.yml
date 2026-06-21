@@ -3,7 +3,7 @@ name: alphacy
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/30 * * * *"   # Κάθε 30 λεπτά
+    - cron: "*/30 * * * *"
 
 jobs:
   build:
@@ -12,7 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 🔧 FIX: Σπάει το apt-get update λόγω Azure mirrors
       - name: Fix broken Azure mirrors
         run: |
           sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu/|http://archive.ubuntu.com/ubuntu/|g' /etc/apt/sources.list
@@ -43,12 +42,13 @@ jobs:
       - name: Install Python dependencies
         run: |
           cd core/platforms
-          pip3 install beautifulsoup4 playwright
+          pip3 install playwright beautifulsoup4
 
       - name: Install Playwright Browsers
         run: |
           cd core/platforms
           playwright install chromium
+          playwright install-deps
 
       - name: Run script
         run: |
@@ -58,9 +58,9 @@ jobs:
       - name: Commit only if changed
         run: |
           if git diff --quiet; then
-            echo "🔹 No changes detected — skipping commit"
+            echo "No changes detected — skipping commit"
           else
-            echo "🔸 Changes detected — committing"
+            echo "Changes detected — committing"
             git add -A
             git commit -m "streams updated"
             git push
