@@ -12,11 +12,6 @@ OUTPUT_FILE = "alphacy.m3u8"
 
 
 def is_master_playlist(url):
-    """
-    Ελέγχει αν το URL είναι το κανονικό master playlist:
-    - περιέχει playlist.m3u8
-    - έχει nimblesessionid με 8 ψηφία
-    """
     if "playlist.m3u8" not in url:
         return False
 
@@ -28,18 +23,26 @@ def is_master_playlist(url):
 
 
 async def fetch_stream():
+    print("Starting Playwright...")
+
     async with async_playwright() as p:
-        browser = await p.chromium.launch(
-            headless=True,
-            args=[
-                "--disable-web-security",
-                "--no-sandbox",
-                "--autoplay-policy=no-user-gesture-required",
-                "--allow-running-insecure-content",
-                "--disable-features=PreloadMediaEngagementData,AutoplayIgnoreWebAudio",
-                "--mute-audio=false"
-            ]
-        )
+        print("Launching Chromium...")
+
+        try:
+            browser = await p.chromium.launch(
+                headless=True,
+                args=[
+                    "--disable-web-security",
+                    "--no-sandbox",
+                    "--autoplay-policy=no-user-gesture-required",
+                    "--allow-running-insecure-content",
+                    "--disable-features=PreloadMediaEngagementData,AutoplayIgnoreWebAudio",
+                    "--mute-audio=false"
+                ]
+            )
+        except Exception as e:
+            print("Chromium failed to launch:", e)
+            return None
 
         context = await browser.new_context()
         page = await context.new_page()
@@ -54,16 +57,15 @@ async def fetch_stream():
         page.on("request", lambda req: record(req.url))
         page.on("response", lambda res: record(res.url))
 
-        print("Loading page...")
+        print("Loading page:", SITE_URL)
         await page.goto(SITE_URL, timeout=60000)
 
-        # Περιμένει το video element
         try:
             await page.wait_for_selector("video", timeout=90000)
+            print("Video element found.")
         except:
-            print("Video element not found")
+            print("Video element not found.")
 
-        # Force play + unmute
         try:
             await page.evaluate("""
                 const v = document.querySelector('video');
@@ -73,8 +75,9 @@ async def fetch_stream():
                     v.play().catch(()=>{});
                 }
             """)
+            print("Video play triggered.")
         except:
-            pass
+            print("Failed to trigger video play.")
 
         print("Waiting for player to load...")
         await asyncio.sleep(15)
@@ -98,7 +101,7 @@ async def fetch_stream():
         await browser.close()
 
         if not master_url:
-            print("Master playlist not found (8-digit session missing)")
+            print("Master playlist not found.")
             return None
 
         print("MASTER PLAYLIST FOUND:", master_url)
