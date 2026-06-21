@@ -33,7 +33,7 @@ async def fetch_stream():
 
         # Περιμένει να εμφανιστεί το video
         try:
-            await page.wait_for_selector("video", timeout=30000)
+            await page.wait_for_selector("video", timeout=90000)
         except:
             print("⚠ Video element not found")
 
@@ -44,7 +44,7 @@ async def fetch_stream():
             pass
 
         # Περιμένει 5 δευτερόλεπτα για να φορτωθούν ΟΛΑ τα CDN
-        await asyncio.sleep(5)
+        await asyncio.sleep(10)
 
         await browser.close()
 
