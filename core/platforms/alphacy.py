@@ -1,125 +1,84 @@
-import time
-import re
+import asyncio
 import os
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium_stealth import stealth
+from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
-
-OUTPUT_DIR = "../streams"
+OUTPUT_DIR = "../../streams"
 OUTPUT_FILE = "alphacy.m3u8"
 
-
-def is_master_playlist(url):
-    if "playlist.m3u8" not in url:
-        return False
-
-    m = re.search(r"nimblesessionid=(\d+)", url)
-    if not m:
-        return False
-
-    return len(m.group(1)) == 8
+PREFERRED = ["am8", "eu", "edge", "us"]
 
 
-def fetch_stream():
-    chrome_options = Options()
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-    chrome_options.add_argument("--disable-web-security")
-    chrome_options.add_argument("--allow-running-insecure-content")
-    chrome_options.add_argument("--autoplay-policy=no-user-gesture-required")
-    chrome_options.add_argument("--use-fake-ui-for-media-stream")
-    chrome_options.add_argument("--use-fake-device-for-media-stream")
-    chrome_options.add_argument("--window-size=1920,1080")
+async def fetch_stream():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(
+            headless=True,
+            args=["--disable-web-security", "--no-sandbox"]
+        )
+        context = await browser.new_context()
+        page = await context.new_page()
 
-    driver = webdriver.Chrome(options=chrome_options)
+        ALL_STREAMS = []
 
-    stealth(
-        driver,
-        languages=["en-US", "en"],
-        vendor="Google Inc.",
-        platform="Win32",
-        webgl_vendor="Intel Inc.",
-        renderer="Intel Iris OpenGL Engine",
-        fix_hairline=True,
-    )
+        def record(url):
+            if ".m3u8" in url:
+                print(f"📡 HLS: {url}")
+                ALL_STREAMS.append(url)
 
-    # ENABLE CDP NETWORK LOGGING
-    driver.execute_cdp_cmd("Network.enable", {})
+        page.on("request", lambda req: record(req.url))
+        page.on("response", lambda res: record(res.url))
 
-    captured_urls = []
+        print("🔍 Loading page...")
+        await page.goto(SITE_URL, timeout=60000)
 
-    def capture_request(params):
-        url = params.get("request", {}).get("url", "")
-        if ".m3u8" in url:
-            print("HLS:", url)
-            captured_urls.append(url)
+        # Περιμένει να εμφανιστεί το video
+        try:
+            await page.wait_for_selector("video", timeout=90000)
+        except:
+            print("⚠ Video element not found")
 
-    driver.execute_cdp_cmd(
-        "Network.setMonitoringBasedProtocol",
-        {"enable": True}
-    )
+        # Πατάει play
+        try:
+            await page.click("video")
+        except:
+            pass
 
-    driver.execute_cdp_cmd(
-        "Network.onRequestWillBeSent",
-        {"listener": capture_request}
-    )
+        # Περιμένει 5 δευτερόλεπτα για να φορτωθούν ΟΛΑ τα CDN
+        await asyncio.sleep(10)
 
-    print("Loading page...")
-    driver.get(SITE_URL)
+        await browser.close()
 
-    time.sleep(10)
+        # Επιλογή CDN με βάση προτεραιότητα
+        for key in PREFERRED:
+            for url in ALL_STREAMS:
+                if key in url:
+                    print(f"🎯 SELECTED [{key}] → {url}")
+                    return url
 
-    try:
-        driver.execute_script("""
-            const v = document.querySelector('video');
-            if (v) {
-                v.muted = false;
-                v.volume = 1.0;
-                v.play().catch(()=>{});
-            }
-        """)
-    except:
-        pass
-
-    print("Waiting for video to load...")
-    time.sleep(25)
-
-    driver.quit()
-
-    for url in captured_urls:
-        if is_master_playlist(url):
-            print("MASTER PLAYLIST FOUND:", url)
-            return url
-
-    print("Master playlist not found.")
-    return None
+        return None
 
 
 def save_stream(url):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
 
-    content = (
-        "#EXTM3U\n"
-        "#EXT-X-VERSION:3\n"
-        "#EXT-X-STREAM-INF:BANDWIDTH=3000000\n"
-        f"{url}\n"
-    )
+    content = f"""#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=3000000
+{url}
+"""
 
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
 
-    print("Saved to:", path)
+    print(f"📁 Saved to: {path}")
 
 
 if __name__ == "__main__":
-    stream = fetch_stream()
+    stream = asyncio.run(fetch_stream())
 
     if stream:
         save_stream(stream)
-        print("Completed.")
+        print("✅ Completed.")
     else:
-        print("No tokenized HLS found.")
+        print("❌ No tokenized HLS found.")
