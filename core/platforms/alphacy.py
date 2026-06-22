@@ -34,6 +34,12 @@ def fetch_stream():
     chrome_options.add_argument("--use-fake-device-for-media-stream")
     chrome_options.add_argument("--window-size=1920,1080")
 
+    # ENABLE CDP NETWORK LOGGING
+    chrome_options.set_capability(
+        "goog:loggingPrefs",
+        {"performance": "ALL"}
+    )
+
     driver = webdriver.Chrome(options=chrome_options)
 
     stealth(
@@ -72,19 +78,13 @@ def fetch_stream():
 
     for entry in logs:
         msg = entry["message"]
-        if ".m3u8" in msg:
-            urls.append(msg)
+        m = re.search(r"https?://[^\s\"']+\.m3u8[^\s\"']*", msg)
+        if m:
+            urls.append(m.group(0))
 
     driver.quit()
 
-    # Extract URLs
-    clean_urls = []
-    for line in urls:
-        m = re.search(r"https?://[^\s\"']+\.m3u8[^\s\"']*", line)
-        if m:
-            clean_urls.append(m.group(0))
-
-    for url in clean_urls:
+    for url in urls:
         if is_master_playlist(url):
             print("MASTER PLAYLIST FOUND:", url)
             return url
