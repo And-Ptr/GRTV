@@ -26,7 +26,9 @@ jobs:
 
       - name: Run alphacy scraper
         run: |
-          python core/platforms/alphacy.py
+          cd core/platforms
+          python alphacy.py
+          cd ../..
 
       - name: Commit updated stream file
         run: |
