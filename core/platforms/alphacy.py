@@ -3,7 +3,7 @@ import os
 from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
-OUTPUT_DIR = "streams"   # 🔥 ΔΙΟΡΘΩΘΗΚΕ – ΤΩΡΑ ΣΩΖΕΙ ΣΤΟ REPO
+OUTPUT_DIR = "streams"   # ΣΩΣΤΟ: γράφει στο streams/ μέσα στο repo
 OUTPUT_FILE = "alphacy.m3u8"
 
 PREFERRED = ["am8", "eu", "edge", "us"]
@@ -31,24 +31,19 @@ async def fetch_stream():
         print("🔍 Loading page...")
         await page.goto(SITE_URL, timeout=60000)
 
-        # Περιμένει να εμφανιστεί το video
         try:
             await page.wait_for_selector("video", timeout=30000)
         except:
             print("⚠ Video element not found")
 
-        # Πατάει play
         try:
             await page.click("video")
         except:
             pass
 
-        # Περιμένει 5 δευτερόλεπτα για να φορτωθούν ΟΛΑ τα CDN
         await asyncio.sleep(5)
-
         await browser.close()
 
-        # Επιλογή CDN με βάση προτεραιότητα
         for key in PREFERRED:
             for url in ALL_STREAMS:
                 if key in url:
@@ -59,7 +54,9 @@ async def fetch_stream():
 
 
 def save_stream(url):
+    # Δημιουργεί τον φάκελο streams αν δεν υπάρχει
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+
     path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
 
     content = f"""#EXTM3U
@@ -72,6 +69,7 @@ def save_stream(url):
         f.write(content)
 
     print(f"📁 Saved to: {path}")
+    print("ABS PATH:", os.path.abspath(path))
 
 
 if __name__ == "__main__":
