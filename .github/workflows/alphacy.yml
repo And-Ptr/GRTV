@@ -2,8 +2,8 @@ name: alphacy
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # Τρέχει κάθε 30 λεπτά
-  workflow_dispatch:         # Χειροκίνητη εκτέλεση
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
 
 jobs:
   fetch-stream:
