@@ -23,9 +23,8 @@ async def fetch_stream():
             ]
         )
 
-        context = await browser.new_context(
-            permissions=["autoplay"]
-        )
+        # ❗ Χωρίς autoplay permission (δεν υποστηρίζεται)
+        context = await browser.new_context()
 
         page = await context.new_page()
 
