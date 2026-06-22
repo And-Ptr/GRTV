@@ -3,7 +3,7 @@ import os
 from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
-OUTPUT_DIR = "../../streams"
+OUTPUT_DIR = "streams"   # 🔥 ΔΙΟΡΘΩΘΗΚΕ – ΤΩΡΑ ΣΩΖΕΙ ΣΤΟ REPO
 OUTPUT_FILE = "alphacy.m3u8"
 
 PREFERRED = ["am8", "eu", "edge", "us"]
