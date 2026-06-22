@@ -6,7 +6,6 @@ from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
 
-# ΣΩΣΤΟ PATH ΓΙΑ ΤΟΝ ΦΑΚΕΛΟ GRTV/streams
 OUTPUT_DIR = "../streams"
 OUTPUT_FILE = "alphacy.m3u8"
 
@@ -26,18 +25,21 @@ async def fetch_stream():
     print("Starting Playwright...")
 
     async with async_playwright() as p:
-        print("Launching Chromium...")
+        print("Launching Chromium (headful)...")
 
         try:
             browser = await p.chromium.launch(
-                headless=True,
+                headless=False,
                 args=[
                     "--disable-web-security",
                     "--no-sandbox",
                     "--autoplay-policy=no-user-gesture-required",
                     "--allow-running-insecure-content",
                     "--disable-features=PreloadMediaEngagementData,AutoplayIgnoreWebAudio",
-                    "--mute-audio=false"
+                    "--mute-audio=false",
+                    "--use-gl=desktop",
+                    "--enable-gpu",
+                    "--window-size=1920,1080"
                 ]
             )
         except Exception as e:
@@ -80,11 +82,11 @@ async def fetch_stream():
             print("Failed to trigger video play.")
 
         print("Waiting for player to load...")
-        await asyncio.sleep(15)
+        await asyncio.sleep(20)
 
         print("Waiting for master playlist...")
 
-        timeout = time.time() + 90
+        timeout = time.time() + 120
         master_url = None
 
         while time.time() < timeout:
