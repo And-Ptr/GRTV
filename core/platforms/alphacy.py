@@ -13,9 +13,20 @@ async def fetch_stream():
     async with async_playwright() as p:
         browser = await p.chromium.launch(
             headless=True,
-            args=["--disable-web-security", "--no-sandbox"]
+            args=[
+                "--disable-web-security",
+                "--no-sandbox",
+                "--autoplay-policy=no-user-gesture-required",
+                "--allow-running-insecure-content",
+                "--disable-features=PreloadMediaEngagementData,AutoplayIgnoreWebAudio",
+                "--mute-audio=false"
+            ]
         )
-        context = await browser.new_context()
+
+        context = await browser.new_context(
+            permissions=["autoplay"]
+        )
+
         page = await context.new_page()
 
         ALL_STREAMS = []
@@ -31,19 +42,26 @@ async def fetch_stream():
         print("🔍 Loading page...")
         await page.goto(SITE_URL, timeout=60000)
 
-        # Περιμένει να εμφανιστεί το video
+        # Περιμένει το video element
         try:
             await page.wait_for_selector("video", timeout=90000)
         except:
             print("⚠ Video element not found")
 
-        # Πατάει play
+        # Force play + unmute
         try:
-            await page.click("video")
+            await page.evaluate("""
+                const v = document.querySelector('video');
+                if (v) {
+                    v.muted = false;
+                    v.volume = 1.0;
+                    v.play().catch(()=>{});
+                }
+            """)
         except:
             pass
 
-        # Περιμένει 5 δευτερόλεπτα για να φορτωθούν ΟΛΑ τα CDN
+        # Περιμένει να φορτώσουν όλα τα CDN
         await asyncio.sleep(10)
 
         await browser.close()
