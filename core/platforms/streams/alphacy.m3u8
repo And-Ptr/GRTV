@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=3000000
+https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4653019&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMi8yMDI2IDE6NDU6NTggQU0maGFzaF92YWx1ZT0wV1l5a2plQWxWd1dFR1JPU0VzRTZnPT0mdmFsaWRtaW51dGVzPTMw
