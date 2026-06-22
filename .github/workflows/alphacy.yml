@@ -1,11 +1,11 @@
 name: alphacy
 
 on:
-  push:
-  pull_request:
+  schedule:
+    - cron: "*/30 * * * *"   # Τρέχει κάθε 30 λεπτά
 
 jobs:
-  build:
+  fetch-stream:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,20 +15,26 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
-      - name: Install system dependencies
+      - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install chromium
 
-      - name: Install Python dependencies
+      - name: Run alphacy scraper
         run: |
-          pip install --upgrade pip
-          pip install selenium selenium-stealth playwright
-          playwright install --with-deps
+          python core/platforms/alphacy.py
 
-      - name: Run alphacy extractor
+      - name: Commit updated stream file
         run: |
-          cd core/platforms
-          python3 alphacy.py
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add streams/alphacy.m3u8
+          git commit -m "Update alphacy stream" || echo "No changes to commit"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
