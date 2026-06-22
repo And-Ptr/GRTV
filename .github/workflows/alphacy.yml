@@ -38,9 +38,8 @@ jobs:
           git config --global user.name "Update Bot"
 
       - name: Grab alphacy streams
-        working-directory: ./core/platforms
         run: |
-          python3 alphacy.py
+          python3 core/platforms/alphacy.py
 
       - name: Commit & Push changes
         run: |
