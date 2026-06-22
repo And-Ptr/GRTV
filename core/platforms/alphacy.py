@@ -1,8 +1,9 @@
-import asyncio
-import os
-import re
 import time
-from playwright.async_api import async_playwright
+import re
+import os
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium_stealth import stealth
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
 
@@ -21,93 +22,75 @@ def is_master_playlist(url):
     return len(m.group(1)) == 8
 
 
-async def fetch_stream():
-    print("Starting Playwright...")
+def fetch_stream():
+    chrome_options = Options()
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("--disable-web-security")
+    chrome_options.add_argument("--allow-running-insecure-content")
+    chrome_options.add_argument("--autoplay-policy=no-user-gesture-required")
+    chrome_options.add_argument("--use-fake-ui-for-media-stream")
+    chrome_options.add_argument("--use-fake-device-for-media-stream")
+    chrome_options.add_argument("--window-size=1920,1080")
 
-    async with async_playwright() as p:
-        print("Launching Chromium (headful)...")
+    driver = webdriver.Chrome(options=chrome_options)
 
-        try:
-            browser = await p.chromium.launch(
-                headless=False,
-                args=[
-                    "--disable-web-security",
-                    "--no-sandbox",
-                    "--autoplay-policy=no-user-gesture-required",
-                    "--allow-running-insecure-content",
-                    "--disable-features=PreloadMediaEngagementData,AutoplayIgnoreWebAudio",
-                    "--mute-audio=false",
-                    "--use-gl=desktop",
-                    "--enable-gpu",
-                    "--window-size=1920,1080"
-                ]
-            )
-        except Exception as e:
-            print("Chromium failed to launch:", e)
-            return None
+    stealth(
+        driver,
+        languages=["en-US", "en"],
+        vendor="Google Inc.",
+        platform="Win32",
+        webgl_vendor="Intel Inc.",
+        renderer="Intel Iris OpenGL Engine",
+        fix_hairline=True,
+    )
 
-        context = await browser.new_context()
-        page = await context.new_page()
+    print("Loading page...")
+    driver.get(SITE_URL)
 
-        ALL_STREAMS = []
+    time.sleep(10)
 
-        def record(url):
-            if ".m3u8" in url:
-                print("HLS:", url)
-                ALL_STREAMS.append(url)
+    # Force play
+    try:
+        driver.execute_script("""
+            const v = document.querySelector('video');
+            if (v) {
+                v.muted = false;
+                v.volume = 1.0;
+                v.play().catch(()=>{});
+            }
+        """)
+    except:
+        pass
 
-        page.on("request", lambda req: record(req.url))
-        page.on("response", lambda res: record(res.url))
+    print("Waiting for video to load...")
+    time.sleep(20)
 
-        print("Loading page:", SITE_URL)
-        await page.goto(SITE_URL, timeout=60000)
+    logs = driver.get_log("performance")
+    urls = []
 
-        try:
-            await page.wait_for_selector("video", timeout=90000)
-            print("Video element found.")
-        except:
-            print("Video element not found.")
+    for entry in logs:
+        msg = entry["message"]
+        if ".m3u8" in msg:
+            urls.append(msg)
 
-        try:
-            await page.evaluate("""
-                const v = document.querySelector('video');
-                if (v) {
-                    v.muted = false;
-                    v.volume = 1.0;
-                    v.play().catch(()=>{});
-                }
-            """)
-            print("Video play triggered.")
-        except:
-            print("Failed to trigger video play.")
+    driver.quit()
 
-        print("Waiting for player to load...")
-        await asyncio.sleep(20)
+    # Extract URLs
+    clean_urls = []
+    for line in urls:
+        m = re.search(r"https?://[^\s\"']+\.m3u8[^\s\"']*", line)
+        if m:
+            clean_urls.append(m.group(0))
 
-        print("Waiting for master playlist...")
+    for url in clean_urls:
+        if is_master_playlist(url):
+            print("MASTER PLAYLIST FOUND:", url)
+            return url
 
-        timeout = time.time() + 120
-        master_url = None
-
-        while time.time() < timeout:
-            for url in ALL_STREAMS:
-                if is_master_playlist(url):
-                    master_url = url
-                    break
-
-            if master_url:
-                break
-
-            await asyncio.sleep(1)
-
-        await browser.close()
-
-        if not master_url:
-            print("Master playlist not found.")
-            return None
-
-        print("MASTER PLAYLIST FOUND:", master_url)
-        return master_url
+    print("Master playlist not found.")
+    return None
 
 
 def save_stream(url):
@@ -128,7 +111,7 @@ def save_stream(url):
 
 
 if __name__ == "__main__":
-    stream = asyncio.run(fetch_stream())
+    stream = fetch_stream()
 
     if stream:
         save_stream(stream)
