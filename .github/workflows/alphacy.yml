@@ -37,7 +37,7 @@ jobs:
           git config --global user.email "actions@github.com"
           git config --global user.name "Update Bot"
 
-      - name: Grab alphacy stream
+      - name: Grab alphacy streams
         working-directory: ./core/platforms
         run: |
           python3 alphacy.py > ../../streams/alphacy.m3u8
@@ -45,5 +45,5 @@ jobs:
       - name: Commit & Push changes
         run: |
           git add -A
-          git commit -m "alphacy stream updated" || echo "No changes"
+          git commit -m "alphacy streams updated" || echo "No changes"
           git push
