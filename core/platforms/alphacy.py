@@ -34,12 +34,6 @@ def fetch_stream():
     chrome_options.add_argument("--use-fake-device-for-media-stream")
     chrome_options.add_argument("--window-size=1920,1080")
 
-    # ENABLE CDP NETWORK LOGGING
-    chrome_options.set_capability(
-        "goog:loggingPrefs",
-        {"performance": "ALL"}
-    )
-
     driver = webdriver.Chrome(options=chrome_options)
 
     stealth(
@@ -52,12 +46,32 @@ def fetch_stream():
         fix_hairline=True,
     )
 
+    # ENABLE CDP NETWORK LOGGING
+    driver.execute_cdp_cmd("Network.enable", {})
+
+    captured_urls = []
+
+    def capture_request(params):
+        url = params.get("request", {}).get("url", "")
+        if ".m3u8" in url:
+            print("HLS:", url)
+            captured_urls.append(url)
+
+    driver.execute_cdp_cmd(
+        "Network.setMonitoringBasedProtocol",
+        {"enable": True}
+    )
+
+    driver.execute_cdp_cmd(
+        "Network.onRequestWillBeSent",
+        {"listener": capture_request}
+    )
+
     print("Loading page...")
     driver.get(SITE_URL)
 
     time.sleep(10)
 
-    # Force play
     try:
         driver.execute_script("""
             const v = document.querySelector('video');
@@ -71,20 +85,11 @@ def fetch_stream():
         pass
 
     print("Waiting for video to load...")
-    time.sleep(20)
-
-    logs = driver.get_log("performance")
-    urls = []
-
-    for entry in logs:
-        msg = entry["message"]
-        m = re.search(r"https?://[^\s\"']+\.m3u8[^\s\"']*", msg)
-        if m:
-            urls.append(m.group(0))
+    time.sleep(25)
 
     driver.quit()
 
-    for url in urls:
+    for url in captured_urls:
         if is_master_playlist(url):
             print("MASTER PLAYLIST FOUND:", url)
             return url
