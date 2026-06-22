@@ -76,7 +76,7 @@ if __name__ == "__main__":
     stream = asyncio.run(fetch_stream())
 
     if stream:
-        save_stream(stream)
+        save_stream(streams)
         print("✅ Completed.")
     else:
         print("❌ No tokenized HLS found.")
