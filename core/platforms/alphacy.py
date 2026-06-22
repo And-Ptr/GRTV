@@ -3,7 +3,7 @@ import os
 from playwright.async_api import async_playwright
 
 SITE_URL = "https://www.alphacyprus.com.cy/live"
-OUTPUT_DIR = "streams"   # ΣΩΣΤΟ: γράφει στο streams/ μέσα στο repo
+OUTPUT_DIR = "streams"
 OUTPUT_FILE = "alphacy.m3u8"
 
 PREFERRED = ["am8", "eu", "edge", "us"]
@@ -54,7 +54,6 @@ async def fetch_stream():
 
 
 def save_stream(url):
-    # Δημιουργεί τον φάκελο streams αν δεν υπάρχει
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     path = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
@@ -76,7 +75,7 @@ if __name__ == "__main__":
     stream = asyncio.run(fetch_stream())
 
     if stream:
-        save_stream(streams)
+        save_stream(stream)
         print("✅ Completed.")
     else:
         print("❌ No tokenized HLS found.")
