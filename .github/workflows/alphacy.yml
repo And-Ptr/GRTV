@@ -1,48 +1,34 @@
-name: alphacy
+name: build
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "*/30 * * * *"
+  push:
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Install Chrome Stable
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget gnupg
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-
-      - name: Install Xvfb
-        run: |
           sudo apt-get install -y xvfb
-          Xvfb :99 -screen 0 1920x1080x24 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Install Python dependencies
         run: |
-          pip3 install selenium selenium-stealth
+          pip install --upgrade pip
+          pip install selenium selenium-stealth playwright
+          playwright install --with-deps
 
-      - name: Run script
+      - name: Run alphacy extractor
         run: |
           cd core/platforms
           python3 alphacy.py
-
-      - name: Commit only if changed
-        run: |
-          if git diff --quiet; then
-            echo "No changes detected — skipping commit"
-          else
-            echo "Changes detected — committing"
-            git add -A
-            git commit -m "streams updated"
-            git push
-          fi
