@@ -1,4 +1,6 @@
 #EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=3000000
-https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4662063&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMi8yMDI2IDY6MzU6MjAgQU0maGFzaF92YWx1ZT1PdXpYWmN6VHZBVFFEME8xa0IrMzJBPT0mdmFsaWRtaW51dGVzPTMw
+#EXTINF:-1,Alpha Cyprus Live
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+#EXTVLCOPT:http-referer=https://www.alphacyprus.com.cy/
+https://us6.cloudskep.com/alphacyp/acy/l4/hd/chunks.m3u8?nimblesessionid=4670441&wmsAuthSign=c2VydmVyX3RpbWU9Ni8yMi8yMDI2IDEwOjQzOjA1IEFNJmhhc2hfdmFsdWU9NGhDRStNYmxNblFjSEtBNzJoOE5rQT09JnZhbGlkbWludXRlcz0zMA==|User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36&Referer=https://www.alphacyprus.com.cy/
