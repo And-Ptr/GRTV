@@ -21,6 +21,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
+            xvfb \
             libnss3 \
             libatk1.0-0 \
             libatk-bridge2.0-0 \
@@ -33,6 +34,11 @@ jobs:
             libpango-1.0-0 \
             libcairo2 \
             libasound2t64
+
+      - name: Start virtual display
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Configure Git
         run: |
