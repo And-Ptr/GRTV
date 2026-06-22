@@ -40,7 +40,7 @@ jobs:
       - name: Grab alphacy stream
         working-directory: ./core/platforms
         run: |
-          python3 alphacy.py > ../../streams/ALPHACY.m3u8
+          python3 alphacy.py > ../../streams/alphacy.m3u8
 
       - name: Commit & Push changes
         run: |
