@@ -12,49 +12,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fix broken Azure mirrors
-        run: |
-          sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu/|http://archive.ubuntu.com/ubuntu/|g' /etc/apt/sources.list
-          sudo sed -i 's|http://security.ubuntu.com/ubuntu|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list
-
-      - name: Install system dependencies
+      - name: Install Chrome Stable
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            xvfb \
-            libnss3 \
-            libatk1.0-0 \
-            libatk-bridge2.0-0 \
-            libcups2 \
-            libxkbcommon0 \
-            libxcomposite1 \
-            libxdamage1 \
-            libxrandr2 \
-            libgbm1 \
-            libpango-1.0-0 \
-            libcairo2 \
-            libasound2t64
+          sudo apt-get install -y wget gnupg
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
-      - name: Start virtual display
+      - name: Install Xvfb
         run: |
+          sudo apt-get install -y xvfb
           Xvfb :99 -screen 0 1920x1080x24 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
 
-      - name: Configure Git
-        run: |
-          git config --global user.email "your-email@example.com"
-          git config --global user.name "Update Bot"
-
       - name: Install Python dependencies
         run: |
-          cd core/platforms
-          pip3 install playwright beautifulsoup4
-
-      - name: Install Playwright Browsers
-        run: |
-          cd core/platforms
-          playwright install chromium
-          playwright install-deps
+          pip3 install selenium selenium-stealth
 
       - name: Run script
         run: |
