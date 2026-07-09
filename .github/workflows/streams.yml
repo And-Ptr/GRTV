@@ -49,7 +49,7 @@ jobs:
           python3 twitch.py astratv2019 > ../../streams/ASTRA_TV_2.m3u8
           python3 twitch.py chanialivetv > ../../streams/CHANIA_TV.m3u8
           python3 twitch.py diavata_tv > ../../streams/DIABATA_TV.m3u8
-          python3 twitch.py dtpylias > ../../streams/DTP.m3u8
+          python3 twitch.py dtptvnet > ../../streams/DTP.m3u8
           python3 twitch.py ellada943fm > ../../streams/ELLADA_TV.M3U8
           python3 twitch.py failarmy > ../../streams/FAILARMY.m3u8
           python3 twitch.py farostv1959 > ../../streams/FAROS_TV_EKKLISIA.m3u8
