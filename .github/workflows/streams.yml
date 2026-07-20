@@ -50,7 +50,7 @@ jobs:
           python3 twitch.py chanialivetv > ../../streams/CHANIA_TV.m3u8
           python3 twitch.py diavata_tv > ../../streams/DIABATA_TV.m3u8
           python3 twitch.py dtptvnet > ../../streams/DTP.m3u8
-          python3 twitch.py ellada943fm > ../../streams/ELLADA_TV.m3u8
+          python3 twitch.py ellada943fm > ../../streams/ELLADA_TV.M3U8
           python3 twitch.py failarmy > ../../streams/FAILARMY.m3u8
           python3 twitch.py farostv1959 > ../../streams/FAROS_TV_EKKLISIA.m3u8
           python3 twitch.py fatsabooktv > ../../streams/FATSABOOK_TV.m3u8
@@ -67,12 +67,7 @@ jobs:
           python3 twitch.py midnightsumo > ../../streams/SUMO.m3u8
           python3 twitch.py xtvision > ../../streams/XTVISION.m3u8
           python3 twitch.py xtvision2 > ../../streams/XTVISION_2.m3u8
-
-          # Kick Streams (ΔΙΟΡΘΩΜΕΝΑ)
-          python3 kick.py astirchannel > ../../streams/ASTIR.m3u8
-          python3 kick.py nexuschannel > ../../streams/NEXUS.m3u8
-          python3 kick.py goldenchannel > ../../streams/GOLDEN.m3u8
-
+          
 
           # Dailymotion Streams
           python3 dailymotion.py x8p5u0u > ../../streams/CGTN.m3u8
@@ -86,3 +81,6 @@ jobs:
           git add -A
           git commit -m "streams updated" || echo "No changes"
           git push
+
+
+
