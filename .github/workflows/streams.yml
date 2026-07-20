@@ -69,7 +69,7 @@ jobs:
           python3 twitch.py xtvision2 > ../../streams/XTVISION_2.m3u8
 
           # Kick Streams
-          python3 kick.py astirchannel > ../../streams/ASTI.m3u8
+          python3 kick.py astirchannel > ../../streams/ASTIR.m3u8
           python3 kick.py nexuschannel > ../../streams/NEXUS.m3u8
           python3 kick.py goldenchannel > ../../GOLDEN.m3u8
 
