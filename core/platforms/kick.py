@@ -2,6 +2,7 @@
 import sys
 import requests
 import time
+import json
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Linux; KickScraper)"
@@ -19,17 +20,17 @@ def get_kick_stream(channel):
 
             data = r.json()
 
-            # 1️⃣ Playback URL (το σωστό HLS)
+            # 1️⃣ Playback URL (το σωστό manifest)
             playback = data.get("playback_url")
             if playback:
-                m3u = fetch_m3u8_follow_redirect(playback)
+                m3u = fetch_manifest(playback)
                 if m3u:
                     return m3u
 
             # 2️⃣ Livestream source (παλιό API)
             livestream = data.get("livestream")
             if livestream and livestream.get("source"):
-                m3u = fetch_m3u8_follow_redirect(livestream["source"])
+                m3u = fetch_manifest(livestream["source"])
                 if m3u:
                     return m3u
 
@@ -39,18 +40,31 @@ def get_kick_stream(channel):
     return fallback(channel)
 
 
-def fetch_m3u8_follow_redirect(url):
+def fetch_manifest(url):
     """
-    Kick playback_url is NOT a playlist.
-    It redirects to the REAL .m3u8.
-    We must follow redirects manually.
+    Kick playback_url returns a JSON manifest, NOT an M3U8.
+    We must extract the real HLS URL from the manifest.
     """
     try:
-        r = requests.get(url, headers=HEADERS, timeout=10, allow_redirects=True)
-        final_url = r.url  # the real playlist URL
+        r = requests.get(url, headers=HEADERS, timeout=10)
+        if not r.ok:
+            return None
 
-        r2 = requests.get(final_url, headers=HEADERS, timeout=10)
-        if r2.ok and "#EXTM3U" in r2.text:
+        manifest = r.json()
+
+        # Kick manifest structure:
+        # { "streams": [ { "url": "REAL_M3U8_URL" } ] }
+        streams = manifest.get("streams")
+        if not streams:
+            return None
+
+        real_url = streams[0].get("url")
+        if not real_url:
+            return None
+
+        # Now download the REAL playlist
+        r2 = requests.get(real_url, headers=HEADERS, timeout=10)
+        if r2.ok:
             return r2.text
 
     except Exception:
