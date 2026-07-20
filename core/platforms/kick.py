@@ -19,17 +19,17 @@ def get_kick_stream(channel):
 
             data = r.json()
 
-            # 1️⃣ ΠΡΩΤΑ έλεγχος playback_url (το σωστό HLS)
+            # 1️⃣ Playback URL (το σωστό HLS)
             playback = data.get("playback_url")
             if playback:
-                m3u = fetch_m3u8(playback)
+                m3u = fetch_m3u8_follow_redirect(playback)
                 if m3u:
                     return m3u
 
-            # 2️⃣ Δεύτερη επιλογή: livestream.source (παλιό API)
+            # 2️⃣ Livestream source (παλιό API)
             livestream = data.get("livestream")
             if livestream and livestream.get("source"):
-                m3u = fetch_m3u8(livestream["source"])
+                m3u = fetch_m3u8_follow_redirect(livestream["source"])
                 if m3u:
                     return m3u
 
@@ -39,14 +39,22 @@ def get_kick_stream(channel):
     return fallback(channel)
 
 
-def fetch_m3u8(url):
-    for _ in range(3):
-        try:
-            r = requests.get(url, headers=HEADERS, timeout=5)
-            if r.ok and "#EXTM3U" in r.text:
-                return r.text
-        except Exception:
-            time.sleep(1)
+def fetch_m3u8_follow_redirect(url):
+    """
+    Kick playback_url is NOT a playlist.
+    It redirects to the REAL .m3u8.
+    We must follow redirects manually.
+    """
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=10, allow_redirects=True)
+        final_url = r.url  # the real playlist URL
+
+        r2 = requests.get(final_url, headers=HEADERS, timeout=10)
+        if r2.ok and "#EXTM3U" in r2.text:
+            return r2.text
+
+    except Exception:
+        return None
 
     return None
 
