@@ -19,16 +19,19 @@ def get_kick_stream(channel):
 
             data = r.json()
 
-            # NEW: Kick now uses playback_url instead of livestream.source
+            # 1️⃣ ΠΡΩΤΑ έλεγχος playback_url (το σωστό HLS)
             playback = data.get("playback_url")
-
             if playback:
-                return fetch_m3u8(playback)
+                m3u = fetch_m3u8(playback)
+                if m3u:
+                    return m3u
 
-            # fallback if playback_url missing
+            # 2️⃣ Δεύτερη επιλογή: livestream.source (παλιό API)
             livestream = data.get("livestream")
             if livestream and livestream.get("source"):
-                return fetch_m3u8(livestream["source"])
+                m3u = fetch_m3u8(livestream["source"])
+                if m3u:
+                    return m3u
 
         except Exception:
             time.sleep(1)
