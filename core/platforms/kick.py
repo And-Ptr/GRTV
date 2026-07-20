@@ -2,6 +2,7 @@
 import sys
 import requests
 import time
+import re
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Linux; KickScraper)"
@@ -19,17 +20,9 @@ def get_kick_stream(channel):
 
             data = r.json()
 
-            # NEW Kick API: playback_url is already a REAL .m3u8 playlist
             playback = data.get("playback_url")
             if playback:
-                m3u = fetch_m3u8(playback)
-                if m3u:
-                    return m3u
-
-            # fallback to old API if needed
-            livestream = data.get("livestream")
-            if livestream and livestream.get("source"):
-                m3u = fetch_m3u8(livestream["source"])
+                m3u = resolve_master_playlist(playback)
                 if m3u:
                     return m3u
 
@@ -39,13 +32,35 @@ def get_kick_stream(channel):
     return fallback(channel)
 
 
-def fetch_m3u8(url):
+def resolve_master_playlist(url):
+    """
+    Kick playback_url returns a MediaPackage master playlist.
+    We must extract variant playlists and return the best one.
+    """
+
     try:
         r = requests.get(url, headers=HEADERS, timeout=10)
-        if r.ok and "#EXTM3U" in r.text:
-            return r.text
+        if not r.ok:
+            return None
+
+        master = r.text
+
+        # Find variant playlists inside master
+        variants = re.findall(r'(https?://[^\s]+\.m3u8)', master)
+
+        if not variants:
+            return None
+
+        # Pick the highest quality playlist (usually last)
+        best = variants[-1]
+
+        r2 = requests.get(best, headers=HEADERS, timeout=10)
+        if r2.ok:
+            return r2.text
+
     except Exception:
         return None
+
     return None
 
 
