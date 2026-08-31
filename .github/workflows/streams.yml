@@ -62,6 +62,7 @@ jobs:
           python3 twitch.py konitsaplustv > ../../streams/KONITSA_TV.m3u8
           python3 twitch.py radiomakedonia > ../../streams/MAKEDONIA_RADIO.m3u8
           python3 twitch.py oloutheradio > ../../streams/OLOUTHE_RADIO.m3u8
+          python3 twitch.py ontv2023 > ../../streams/ON_TV.m3u8
           python3 twitch.py orthodoxiaradio > ../../streams/ORTHODOXIA_TV.m3u8
           python3 twitch.py pakoestream > ../../streams/PAKOE_TV.m3u8
           python3 twitch.py zefstv1 > ../../streams/PLUTON_TV.m3u8
