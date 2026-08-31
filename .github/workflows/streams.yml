@@ -40,7 +40,8 @@ jobs:
         working-directory: ./core/platforms
         continue-on-error: true
         run: |
-          # Twitch Streams
+          # Twitch Streams      
+          python3 twitch.py 34100tv > ../../streams/34100tv.m3u8
           python3 twitch.py altertvcy > ../../streams/ALTER_CY.m3u8
           python3 twitch.py aktinaradio > ../../streams/AKTINA_RADIO.m3u8
           python3 twitch.py alithiavideo > ../../streams/ALITHIA_TV.m3u8
