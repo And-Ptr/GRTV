@@ -1,10 +1,10 @@
 #EXTM3U
 #EXT-X-STREAM-INF:RESOLUTION=512x288,FRAME-RATE=25.000000,BANDWIDTH=782336,CODECS="avc1.420015,mp4a.40.5",NAME="380"
-https://live.eu-north-1a.cf.dmcdn.net/sec2(Gd2UstTMTd1mM1dKaiAEe-JjhUt7mcVf8kiY8GP5a0VRjPR1Z3v_MYfurDVJWb7A3az-KDUM3eq7lxjAO8y7zEcJyVjlH3kKzKAvU2kvHtzt42eLPk-xNTFPaBgy5CkQ)/dm/3/x3b68jn/d/live-380.m3u8?startdate=2026-07-07T08%3A07%3A42%2B0000#cell=lcf-eu-north-1a
+https://live.eu-north-1a.cf.dmcdn.net/sec2(aMlIB7dEKJ-eBofmKWVrJT5eFNmQW-WQvyGYz9_wCLlrgsgsRvY13xFvMOWjmmTuXDwxj4VVBZILcJQWY_3HaMbByzcBiF5Fb5EvxB3mGRSNpSQihI89NssSvbya5j_3)/dm/3/x3b68jn/d/live-380.m3u8?startdate=2026-07-07T08%3A07%3A42%2B0000#cell=lcf-eu-north-1a
 #EXT-X-STREAM-INF:RESOLUTION=512x288,FRAME-RATE=25.000000,BANDWIDTH=782336,CODECS="avc1.420015,mp4a.40.5",NAME="380"
-https://live.eu-north-1b.cf.dmcdn.net/sec2(zsPobR7Z2xrXhYpkBTWce36mGgPF7qIKthzO7zr5BMg8TdDkXHaJAVz5-YgPgzfMG2naeiv2nmdS_n6_PgUvP8izBVC-k9ejv_zPvYxNRQnykfdGmyTvVBAQzsWFWOss)/dm/3/x5idxxp/s/live-380.m3u8
+https://live.eu-north-1b.cf.dmcdn.net/sec2(gYYJA0dvvi5wQc0RhFnvwBQL7NlmEeuPyPrBp6pKE9lknMAvDDBCcJwCIUFWPEmHdF36d7a6_2dKTswuQKPn7KS2n9Q-vfcP76mdNSF4MqHcfSL8AOjn4kzHuYwPhoBA)/dm/3/x5idxxp/s/live-380.m3u8
 #EXT-X-STREAM-INF:RESOLUTION=320x180,FRAME-RATE=25.000000,BANDWIDTH=475136,CODECS="avc1.42000c,mp4a.40.5",NAME="240"
-https://live.eu-north-1a.cf.dmcdn.net/sec2(Gd2UstTMTd1mM1dKaiAEe-JjhUt7mcVf8kiY8GP5a0VRjPR1Z3v_MYfurDVJWb7A3az-KDUM3eq7lxjAO8y7zEcJyVjlH3kKzKAvU2kvHtzt42eLPk-xNTFPaBgy5CkQ)/dm/3/x3b68jn/d/live-240.m3u8?startdate=2026-07-07T08%3A07%3A42%2B0000#cell=lcf-eu-north-1a
+https://live.eu-north-1a.cf.dmcdn.net/sec2(aMlIB7dEKJ-eBofmKWVrJT5eFNmQW-WQvyGYz9_wCLlrgsgsRvY13xFvMOWjmmTuXDwxj4VVBZILcJQWY_3HaMbByzcBiF5Fb5EvxB3mGRSNpSQihI89NssSvbya5j_3)/dm/3/x3b68jn/d/live-240.m3u8?startdate=2026-07-07T08%3A07%3A42%2B0000#cell=lcf-eu-north-1a
 #EXT-X-STREAM-INF:RESOLUTION=320x180,FRAME-RATE=25.000000,BANDWIDTH=475136,CODECS="avc1.42000c,mp4a.40.5",NAME="240"
-https://live.eu-north-1b.cf.dmcdn.net/sec2(zsPobR7Z2xrXhYpkBTWce36mGgPF7qIKthzO7zr5BMg8TdDkXHaJAVz5-YgPgzfMG2naeiv2nmdS_n6_PgUvP8izBVC-k9ejv_zPvYxNRQnykfdGmyTvVBAQzsWFWOss)/dm/3/x5idxxp/s/live-240.m3u8
+https://live.eu-north-1b.cf.dmcdn.net/sec2(gYYJA0dvvi5wQc0RhFnvwBQL7NlmEeuPyPrBp6pKE9lknMAvDDBCcJwCIUFWPEmHdF36d7a6_2dKTswuQKPn7KS2n9Q-vfcP76mdNSF4MqHcfSL8AOjn4kzHuYwPhoBA)/dm/3/x5idxxp/s/live-240.m3u8
 
